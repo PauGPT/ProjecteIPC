@@ -1,0 +1,44 @@
+/* Estilo base para los botones del menú */
+.menu-button {
+    -fx-background-color: transparent; /* Sin fondo */
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-text-fill: #555555; /* Gris oscuro */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 20 0 20; /* Espaciado lateral */
+}
+
+/* Efecto al pasar el ratón (Hover) */
+.menu-button:hover {
+    -fx-background-color: #f4f4f4; /* Gris muy clarito */
+    -fx-text-fill: #000000;
+}
+
+/* Efecto cuando el botón está seleccionado (La pestaña activa) */
+.menu-button:selected {
+    -fx-background-color: transparent;
+    -fx-text-fill: #fc6100; /* Color naranja Strava */
+    -fx-border-color: #fc6100; /* Línea de color */
+    -fx-border-width: 0 0 3 0; /* Solo línea inferior de 3px */
+}
+
+/* Estilo total para el botón del logo */
+.logo-button {
+    -fx-background-color: transparent; /* Fondo transparente */
+    -fx-background-insets: 0; /* Elimina cualquier espacio interno del fondo */
+    -fx-background-radius: 0; /* Esquinas rectas si las hubiera */
+    -fx-border-color: transparent; /* Borde transparente */
+    -fx-border-width: 0; /* Ancho del borde a cero */
+    -fx-padding: 0; /* Elimina el espacio entre el borde y la imagen */
+}
+
+/* MUY IMPORTANTE: Eliminar el estilo cuando el botón tiene el FOCO */
+.logo-button:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    /* Si quieres una sutil indicación de foco para accesibilidad, 
+       podrías usar un drop-shadow, pero para un logo limpio, mejor nada */
+}
+
