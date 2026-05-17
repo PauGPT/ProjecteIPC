@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" styleClass="main" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" styleClass="main" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
     <children>
       
         <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="8.0">
@@ -30,7 +30,7 @@
             
                 <StackPane alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="300.0">
                     <children>
-                        <TextField maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0" style="-fx-padding: 5 10 5 35;">
+                        <TextField fx:id="userField" maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0" style="-fx-padding: 5 10 5 35;">
                             <StackPane.margin>
                                 <Insets />
                             </StackPane.margin>
@@ -57,14 +57,20 @@
             
                 <StackPane alignment="CENTER_LEFT" maxWidth="300.0">
                     <children>
-                        <TextField disable="true" maxHeight="-Infinity" maxWidth="300.0" prefHeight="35.0" prefWidth="300.0" style="-fx-padding: 5 35 5 35;" visible="false" />
-                        <PasswordField maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0" style="-fx-padding: 5 35 5 35;">
+                        <TextField fx:id="passTextField" disable="true" maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0" visible="false">
+                     <padding>
+                        <Insets left="35.0" />
+                     </padding></TextField>
+                        <PasswordField fx:id="passField" maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0">
                             <StackPane.margin>
                                 <Insets />
                             </StackPane.margin>
+                     <padding>
+                        <Insets left="35.0" />
+                     </padding>
                         </PasswordField>
                   
-                        <ImageView fitHeight="18.0" fitWidth="18.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER_LEFT">
+                        <ImageView fitHeight="18.0" fitWidth="18.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                             <image>
                                 <Image url="@../resources/login/password-lock-12.png" />
                             </image>
@@ -73,9 +79,9 @@
                             </StackPane.margin>
                         </ImageView>
                   
-                        <Button mnemonicParsing="false" styleClass="eyeButton" StackPane.alignment="CENTER_RIGHT">
+                        <Button mnemonicParsing="false" onAction="#togglePasswordVisibility" styleClass="eyeButton" StackPane.alignment="CENTER_RIGHT">
                             <graphic>
-                                <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                <ImageView fx:id="imgEye" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
                                         <Image url="@../resources/login/eye.png" />
                                     </image>
@@ -88,7 +94,7 @@
                     </children>
                 </StackPane>
             
-                <Label managed="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="300.0" styleClass="errorLabel" text="Error al iniciar sesión. Revise el usuario y la contraseña" visible="true" wrapText="true">
+                <Label fx:id="errorLogin" managed="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="300.0" styleClass="errorLabel" text="Error al iniciar sesión. Revise el usuario y la contraseña" visible="false" wrapText="true">
                     <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -104,7 +110,7 @@
                </padding>
                 </Label>
             
-                <Button maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" mnemonicParsing="false" prefHeight="35.0" prefWidth="300.0" styleClass="loginButton" text="Iniciar sesión">
+                <Button maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" mnemonicParsing="false" onAction="#login" prefHeight="35.0" prefWidth="300.0" styleClass="loginButton" text="Iniciar sesión">
                     <VBox.margin>
                         <Insets top="30.0" />
                     </VBox.margin>

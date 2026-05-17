@@ -62,3 +62,19 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-background-radius: 6px;    
     -fx-effect: dropshadow(three-pass-box, rgba(153, 27, 27, 0.05), 4, 0, 0, 1);
 }
+.hyperlink{
+    -fx-text-fill: #2563EB; 
+    -fx-underline: true;
+}
+
+.hyperlink:hover {
+    -fx-text-fill: #1D4ED8; 
+}
+
+.hyperlink:visited {
+    -fx-text-fill: #2563EB;
+}
+
+.hyperlink:armed {
+    -fx-text-fill: #1E40AF; 
+}
