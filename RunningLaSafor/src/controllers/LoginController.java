@@ -4,16 +4,20 @@
  */
 package controllers;
 
+import application.App;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import upv.ipc.sportlib.SportActivityApp;
 
 /**
@@ -38,6 +42,8 @@ public class LoginController implements Initializable {
     private TextField userField;
     @FXML
     private Label errorLogin;
+    @FXML
+    private Button loginButton;
 
     /**
      * Initializes the controller class.
@@ -81,12 +87,15 @@ public class LoginController implements Initializable {
     private void login(ActionEvent event) {
 
         boolean islogged = app.login(userField.getText(), passField.getText());
-
+        
         userField.setText("");
         passField.setText("");
         passTextField.setText("");
 
         if (islogged) {
+            
+            VBox.setMargin(loginButton, new Insets(30,0,0,0));
+
             errorLogin.setManaged(false);
             errorLogin.setVisible(false);
 
@@ -100,8 +109,14 @@ public class LoginController implements Initializable {
 
             errorLogin.setManaged(true);
             errorLogin.setVisible(true);
+            VBox.setMargin(loginButton, new Insets(0,0,0,0));
 
         }
 
+    }
+
+    @FXML
+    private void goToRegister(ActionEvent event) {
+        App.getMainController().loadView("/views/register.fxml");
     }
 }

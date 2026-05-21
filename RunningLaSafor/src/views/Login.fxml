@@ -12,17 +12,17 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" styleClass="main" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
+<VBox alignment="CENTER" prefHeight="680.0" prefWidth="680.0" styleClass="main" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LoginController">
     <children>
       
         <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="8.0">
             <children>
-                <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Iniciar sesión">
+                <Label styleClass="mainLabel" text="Iniciar sessió">
                     <VBox.margin>
-                        <Insets bottom="30.0" top="40.0" />
+                        <Insets bottom="15.0" top="15.0" />
                     </VBox.margin>
                 </Label>
-                <Label text="Nombre de usuario:">
+                <Label text="Nom d'usuari:">
                     <padding>
                         <Insets bottom="-5.0" />
                     </padding>
@@ -46,7 +46,7 @@
                     </children>
                 </StackPane>
             
-                <Label text="Contraseña:">
+                <Label text="Contrasenya:">
                     <VBox.margin>
                         <Insets top="10.0" />
                     </VBox.margin>
@@ -58,16 +58,17 @@
                 <StackPane alignment="CENTER_LEFT" maxWidth="300.0">
                     <children>
                         <TextField fx:id="passTextField" disable="true" maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0" visible="false">
-                     <padding>
-                        <Insets left="35.0" />
-                     </padding></TextField>
+                            <padding>
+                                <Insets left="35.0" />
+                            </padding>
+                        </TextField>
                         <PasswordField fx:id="passField" maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0">
                             <StackPane.margin>
                                 <Insets />
                             </StackPane.margin>
-                     <padding>
-                        <Insets left="35.0" />
-                     </padding>
+                            <padding>
+                                <Insets left="35.0" />
+                            </padding>
                         </PasswordField>
                   
                         <ImageView fitHeight="18.0" fitWidth="18.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
@@ -94,7 +95,7 @@
                     </children>
                 </StackPane>
             
-                <Label fx:id="errorLogin" managed="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="300.0" styleClass="errorLabel" text="Error al iniciar sesión. Revise el usuario y la contraseña" visible="false" wrapText="true">
+                <Label fx:id="errorLogin" managed="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="300.0" styleClass="errorLabel" text="Error en iniciar sessió. Revisi l'usuari i la contrasenya" visible="false" wrapText="true">
                     <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -103,14 +104,14 @@
                         </ImageView>
                     </graphic>
                     <VBox.margin>
-                        <Insets top="5.0" />
+                        <Insets bottom="5.0" top="5.0" />
                     </VBox.margin>
-               <padding>
-                  <Insets left="5.0" />
-               </padding>
+                    <padding>
+                        <Insets left="5.0" />
+                    </padding>
                 </Label>
             
-                <Button maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" mnemonicParsing="false" onAction="#login" prefHeight="35.0" prefWidth="300.0" styleClass="loginButton" text="Iniciar sesión">
+                <Button fx:id="loginButton" maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" mnemonicParsing="false" onAction="#login" prefHeight="35.0" prefWidth="300.0" styleClass="loginButton" text="Iniciar sessió">
                     <VBox.margin>
                         <Insets top="30.0" />
                     </VBox.margin>
@@ -118,12 +119,12 @@
             
                 <TextFlow prefHeight="200.0" prefWidth="200.0" textAlignment="CENTER">
                     <children>
-                        <Label text="¿Eres nuevo?">
+                        <Label text="Ets nou?">
                             <padding>
                                 <Insets right="3.0" />
                             </padding>
                         </Label>
-                        <Hyperlink text="Crea una cuenta" underline="true" />
+                        <Hyperlink onAction="#goToRegister" text="Crea un compte" underline="true" />
                     </children>
                     <VBox.margin>
                         <Insets top="10.0" />

@@ -6,6 +6,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Created on : 16 may 2026, 22:15:36
     Author     : ultraMEga
 */
+
+.mainLabel{
+    -fx-font-weight:bold;
+    -fx-font-size:32px;
+    
+}
 .eyeButton{
     -fx-background-color: transparent;
     -fx-cursor: hand;
@@ -23,15 +29,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 .main{
     -fx-border-radius:50px;
     /*Color temporal*/
-    -fx-background-color: aquamarine; 
+    -fx-background-color: aquamarine;
 }
 
 .loginButton{
-    -fx-background-color: #2563EB; 
+    -fx-background-color: #2563EB;
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-background-radius: 6px;  
+    -fx-background-radius: 6px;
     -fx-cursor: hand;
 }
 .loginButton:hover{
@@ -54,21 +60,21 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 }
 
 .errorLabel{
-    -fx-background-color: #FEF2F2; 
-    -fx-text-fill: #991B1B;       
-    -fx-border-color: #FCA5A5;     
-    -fx-border-width: 1px;         
-    -fx-border-radius: 6px;        
-    -fx-background-radius: 6px;    
+    -fx-background-color: #FEF2F2;
+    -fx-text-fill: #991B1B;
+    -fx-border-color: #FCA5A5;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
     -fx-effect: dropshadow(three-pass-box, rgba(153, 27, 27, 0.05), 4, 0, 0, 1);
 }
 .hyperlink{
-    -fx-text-fill: #2563EB; 
+    -fx-text-fill: #2563EB;
     -fx-underline: true;
 }
 
 .hyperlink:hover {
-    -fx-text-fill: #1D4ED8; 
+    -fx-text-fill: #1D4ED8;
 }
 
 .hyperlink:visited {
@@ -76,5 +82,77 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 }
 
 .hyperlink:armed {
-    -fx-text-fill: #1E40AF; 
+    -fx-text-fill: #1E40AF;
+}
+
+
+.datePicker {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.datePicker > .text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+}
+
+.datePicker > .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 15;
+}
+
+.datePicker > .arrow-button > .arrow {
+    -fx-shape: "M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z";
+    -fx-background-color: #000000; 
+    -fx-min-width: 14px;
+    -fx-max-width: 14px;
+    -fx-min-height: 14px;
+    -fx-max-height: 14px;
+}
+
+.datePicker > .arrow-button:hover {
+    -fx-cursor: hand;
+    -fx-background-color: #E2E8F0;
+    -fx-background-radius: 4px;
+}
+
+.datePicker > .arrow-button:pressed {
+    -fx-background-color: #CBD5E1;
+    -fx-background-radius: 4px;
+}
+
+.avatarCircle {
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out;
+    -fx-background-color: #FFFFFF;    
+}
+.avatarCircle:hover {
+    -fx-stroke: #4A90E2;
+    -fx-stroke-width: 2px;
+}
+
+.removeAvatarButton {
+    -fx-background-radius: 100px;
+    -fx-background-color: #EF4444; 
+    -fx-cursor: hand;
+    -fx-alignment: CENTER;
+}
+
+.removeAvatarButton:hover {
+    -fx-background-color: #DC2626;
+}
+
+.removeAvatarButton:pressed {
+    -fx-background-color: #B91C1C;
+}
+
+.removeAvatarButton > .removeIcon {
+    -fx-shape: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z";
+    -fx-background-color: #FFFFFF; 
+    -fx-min-width: 9px;
+    -fx-max-width: 9px;
+    -fx-min-height: 9px;
+    -fx-max-height: 9px;
 }
