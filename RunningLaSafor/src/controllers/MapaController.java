@@ -73,7 +73,6 @@ public class MapaController implements Initializable {
         configurarColumnaBorrar();
         
         mapsTableView.setItems(mapas);
-        mapsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }    
     
     @FXML

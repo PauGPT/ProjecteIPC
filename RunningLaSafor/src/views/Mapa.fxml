@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane fx:id="splitPanePrincipal" dividerPositions="0.6367279585101367" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="850.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MapaController">
+<SplitPane fx:id="splitPanePrincipal" dividerPositions="0.6367279585101367" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.0" prefWidth="931.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MapaController">
   <items>
     <VBox spacing="10.0">
          <children>
@@ -38,6 +38,9 @@
                 <TableColumn fx:id="lonMaxCol" minWidth="75.0" prefWidth="-1.0" text="Lon. màx" />
                 <TableColumn fx:id="deleteColumn" maxWidth="50.0" minWidth="40.0" prefWidth="45.0" styleClass="columna-centrada" text="Acció" />
               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
             </TableView>
          </children>
          <padding>
