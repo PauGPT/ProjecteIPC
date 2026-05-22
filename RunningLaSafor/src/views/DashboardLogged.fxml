@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<GridPane gridLinesVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="960.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DashboardLoggedController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="20.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="25.0" GridPane.columnIndex="1">
+         <children>
+            <VBox alignment="CENTER" spacing="10.0">
+               <children>
+                  <Circle fx:id="avatarCircle" radius="50.0" stroke="#cccccc" strokeType="INSIDE" strokeWidth="1.0" />
+                  <Label fx:id="welcomeLabel" text="Benvingut!" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="22.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="monthLabel" text="Acumulat de les teues activitats d'este mes:" textAlignment="CENTER" textFill="#666666" wrapText="true">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+            
+            <GridPane hgap="15.0" vgap="15.0" alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="90.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="90.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <!-- Card 1: Kms totals -->
+                  <VBox alignment="CENTER" styleClass="stat-card" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;">
+                     <children>
+                        <Label fx:id="lblTotalKms" text="0.0 km" textFill="#32a852">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label text="Distància total" textFill="#777777">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <!-- Card 2: Temps total -->
+                  <VBox alignment="CENTER" styleClass="stat-card" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" GridPane.columnIndex="1">
+                     <children>
+                        <Label fx:id="lblTotalTime" text="0h 0m" textFill="#32a852">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label text="Temps total" textFill="#777777">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <!-- Card 3: Desnivell positiu -->
+                  <VBox alignment="CENTER" styleClass="stat-card" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" GridPane.rowIndex="1">
+                     <children>
+                        <Label fx:id="lblElevationGain" text="+0 m" textFill="#2980b9">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label text="Desnivell positiu" textFill="#777777">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <!-- Card 4: Desnivell negatiu -->
+                  <VBox alignment="CENTER" styleClass="stat-card" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <children>
+                        <Label fx:id="lblElevationLoss" text="-0 m" textFill="#e74c3c">
+                           <font>
+                              <Font name="System Bold" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label text="Desnivell negatiu" textFill="#777777">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+      <Region fx:id="left_region" prefHeight="200.0" prefWidth="200.0" styleClass="left-banner" />
+      <Region fx:id="right_region" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" />
+   </children>
+</GridPane>

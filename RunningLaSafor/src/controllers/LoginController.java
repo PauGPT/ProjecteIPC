@@ -99,12 +99,9 @@ public class LoginController implements Initializable {
             errorLogin.setManaged(false);
             errorLogin.setVisible(false);
 
-            System.out.println(app.getCurrentUser().getNickName());
-            System.out.println(app.getCurrentUser().getId());
-
-            app.logout();
-
-            //ni idea que hacer luego
+            App.getMainController().updateMenuAvatar();
+            App.getMainController().updateToolbarState();
+            App.getMainController().loadView(App.Vista.DASHBOARD_LOGGED);
         } else {
 
             errorLogin.setManaged(true);

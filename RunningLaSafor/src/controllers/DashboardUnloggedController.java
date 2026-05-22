@@ -4,8 +4,10 @@
  */
 package controllers;
 
+import application.App;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Region;
@@ -29,5 +31,10 @@ public class DashboardUnloggedController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
+
+    @FXML
+    private void goToLogin(ActionEvent event) {
+        App.getMainController().loadView(App.Vista.LOGIN);
+    }
     
 }

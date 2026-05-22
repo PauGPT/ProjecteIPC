@@ -20,11 +20,26 @@ public class App extends Application {
     public static void setMainController(MainController controller) {
         mainController = controller;
     }
+    
+    public enum Vista {
+        LOGIN("/views/Login.fxml"),
+        DASHBOARD_UNLOGGED("/views/DashboardUnlogged.fxml"),
+        REGISTER("/views/register.fxml"),
+        DASHBOARD_LOGGED("/views/DashboardLogged.fxml");
+
+        private final String ruta;
+        Vista(String ruta) { this.ruta = ruta; }
+        public String getRuta() { return this.ruta; }
+    }
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/views/Main.fxml"));
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo.png")));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/Main.fxml"));
+        Parent root = loader.load();
+        
+        mainController = loader.getController();
+        
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/green_logo_small.png")));
         Scene scene = new Scene(root);
         stage.setTitle("Running La Safor");
         stage.setScene(scene);

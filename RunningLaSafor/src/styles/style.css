@@ -54,4 +54,9 @@
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
 
-}   
+}
+
+.stat-card {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 8, 0, 0, 4);
+}
+
