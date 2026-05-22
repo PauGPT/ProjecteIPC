@@ -1,4 +1,9 @@
 /* Estilo base para los botones del menú */
+
+.root {
+    -accent-GREEN: #32a852;
+}
+
 .menu-button {
     -fx-background-color: transparent; /* Sin fondo */
     -fx-background-radius: 0;
@@ -18,8 +23,8 @@
 /* Efecto cuando el botón está seleccionado (La pestaña activa) */
 .menu-button:selected {
     -fx-background-color: transparent;
-    -fx-text-fill: #fc6100; /* Color naranja Strava */
-    -fx-border-color: #fc6100; /* Línea de color */
+    -fx-text-fill: -accent-GREEN; /* Color verd per a acentuar */
+    -fx-border-color: -accent-GREEN; /* Línea de color */
     -fx-border-width: 0 0 3 0; /* Solo línea inferior de 3px */
 }
 
@@ -42,3 +47,11 @@
        podrías usar un drop-shadow, pero para un logo limpio, mejor nada */
 }
 
+.left-banner {
+
+    -fx-background-image: url('/resources/main/left_side_banner.png');
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+
+}   

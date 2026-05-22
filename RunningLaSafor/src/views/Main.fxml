@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.ToggleButton?>
@@ -15,8 +17,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Circle?>
 
-<BorderPane stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
+<BorderPane fx:id="contentPane" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainController">
    <center>
       <VBox prefHeight="556.0" prefWidth="853.0" stylesheets="@../resources/estilos.css">
          <children>
@@ -54,19 +60,19 @@
    <top>
       <HBox prefHeight="60.0">
          <children>
-          <Button fx:id="activitatsButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#activitatsButtonClicked" styleClass="logo-button">
+          <Button fx:id="logoButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="logo-button">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
                <graphic>
-                  <ImageView blendMode="MULTIPLY" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView blendMode="MULTIPLY" fitHeight="50.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../resources/logo.png" />
+                        <Image url="@../resources/logo_complete.png" />
                      </image>
                   </ImageView>
                </graphic>
             </Button>
-            <ToggleButton maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-button" text="Activitats">
+            <ToggleButton fx:id="activitatsButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-button" text="Activitats">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -74,17 +80,39 @@
                   <ToggleGroup fx:id="menu" />
                </toggleGroup>
             </ToggleButton>
-            <ToggleButton maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-button" text="Mapes" toggleGroup="$menu">
+            <ToggleButton fx:id="mapesButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-button" text="Mapes" toggleGroup="$menu">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ToggleButton>
             <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-            <Button fx:id="activitatsButton111" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#activitatsButtonClicked" styleClass="menu-button" text="Perfil">
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
+            <MenuButton maxHeight="1.7976931348623157E308" mnemonicParsing="false">
+              <items>
+                <MenuItem fx:id="modificarPerfilButton" mnemonicParsing="false" text="Modificar perfil" />
+                <MenuItem fx:id="historialButton" mnemonicParsing="false" text="Historial de sessions" />
+                  <MenuItem fx:id="logoutButton" mnemonicParsing="false" text="Tancar sessió" />
+              </items>
+               <graphic>
+                  <Circle fx:id="avatarCircleMenu" radius="15.0" stroke="#797979" strokeType="INSIDE" strokeWidth="0.0">
+                     <fill>
+                        <LinearGradient endY="1.0">
+                           <stops>
+                              <Stop>
+                                 <color>
+                                    <Color />
+                                 </color>
+                              </Stop>
+                              <Stop offset="1.0">
+                                 <color>
+                                    <Color red="1.0" green="1.0" blue="1.0" />
+                                 </color>
+                              </Stop>
+                           </stops>
+                        </LinearGradient>
+                     </fill>
+                  </Circle>
+               </graphic>
+            </MenuButton>
          </children>
          <padding>
             <Insets left="10.0" />
