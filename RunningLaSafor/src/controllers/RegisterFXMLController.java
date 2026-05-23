@@ -170,9 +170,9 @@ public class RegisterFXMLController implements Initializable {
                 if (birthDatePicker.getValue() == null) {
                     errorBirthDate = true;
                     mostrarErrorEnCampo(birthContainer, "La data de naixement no pot estar buida");
-                } else if (!User.isOlderThan(birthDatePicker.getValue(), 18)) {
+                } else if (!User.isOlderThan(birthDatePicker.getValue(), 12)) {
                     errorBirthDate = true;
-                    mostrarErrorEnCampo(birthContainer, "Has de tindre més de 18 anys per a registrar-te");
+                    mostrarErrorEnCampo(birthContainer, "Has de tindre més de 12 anys per a registrar-te");
                 } else {
                     errorBirthDate = false;
                     ocultarErrorEnCampo(birthContainer);
