@@ -57,19 +57,8 @@
             
                 <StackPane alignment="CENTER_LEFT" maxWidth="300.0">
                     <children>
-                        <TextField fx:id="passTextField" disable="true" maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0" visible="false">
-                            <padding>
-                                <Insets left="35.0" />
-                            </padding>
-                        </TextField>
-                        <PasswordField fx:id="passField" maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0">
-                            <StackPane.margin>
-                                <Insets />
-                            </StackPane.margin>
-                            <padding>
-                                <Insets left="35.0" />
-                            </padding>
-                        </PasswordField>
+                        <TextField fx:id="passTextField" disable="true" maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0" style="-fx-padding: 5 40 5 35;" visible="false" />
+                        <PasswordField fx:id="passField" maxHeight="-Infinity" maxWidth="300.0" minHeight="-Infinity" prefHeight="35.0" prefWidth="300.0" style="-fx-padding: 5 40 5 35;" />
                   
                         <ImageView fitHeight="18.0" fitWidth="18.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                             <image>
@@ -80,7 +69,7 @@
                             </StackPane.margin>
                         </ImageView>
                   
-                        <Button mnemonicParsing="false" onAction="#togglePasswordVisibility" styleClass="eyeButton" StackPane.alignment="CENTER_RIGHT">
+                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#togglePasswordVisibility" styleClass="eyeButton" StackPane.alignment="CENTER_RIGHT">
                             <graphic>
                                 <ImageView fx:id="imgEye" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
                                     <image>

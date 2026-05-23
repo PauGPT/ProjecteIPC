@@ -27,11 +27,11 @@
                   <Image url="@../resources/logo_complete.png" />
                </image>
             </ImageView>
-            <Label text="Hora de córrer amb nosaltres" textAlignment="CENTER" wrapText="true" />
+            <Label text="Hora de córrer amb nosaltres" textAlignment="CENTER" wrapText="true" styleClass="dashboard-hero-text" />
             <Button mnemonicParsing="false" onAction="#goToLogin" text="Iniciar sessió" />
          </children>
       </VBox>
       <Region fx:id="left_region" prefHeight="200.0" prefWidth="200.0" styleClass="left-banner" />
-      <Region fx:id="right_region" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" />
+      <Region fx:id="right_region" prefHeight="200.0" prefWidth="200.0" styleClass="right-banner" GridPane.columnIndex="2" />
    </children>
 </GridPane>

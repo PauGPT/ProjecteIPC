@@ -208,6 +208,8 @@ public class MapaController implements Initializable {
                                 alerta.showAndWait();
                             }
                         });
+                        
+                        setAlignment(javafx.geometry.Pos.CENTER);
                     }
 
                     @Override

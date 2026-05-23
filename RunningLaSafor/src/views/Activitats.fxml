@@ -26,8 +26,8 @@
                </font>
             </Label>
             <HBox HBox.hgrow="ALWAYS" />
-            <Button fx:id="btnImportActivity" mnemonicParsing="false" onAction="#handleImportActivity" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="+ Importar Activitat" />
-            <Button fx:id="btnDeleteActivity" disable="true" mnemonicParsing="false" onAction="#handleDeleteActivity" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Suprimir Activitat" />
+            <Button fx:id="btnImportActivity" mnemonicParsing="false" onAction="#handleImportActivity" text="+ Importar Activitat" />
+            <Button fx:id="btnDeleteActivity" disable="true" mnemonicParsing="false" onAction="#handleDeleteActivity" styleClass="destructive-button" text="Suprimir Activitat" />
          </children>
       </HBox>
       <SplitPane fx:id="splitPane" dividerPositions="0.25" VBox.vgrow="ALWAYS">

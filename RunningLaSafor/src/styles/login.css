@@ -1,101 +1,111 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
-*/
 /* 
-    Created on : 16 may 2026, 22:15:36
-    Author     : ultraMEga
+   login.css - Specific Stylesheet for Auth/User Profile Views
+   Cohesive Emerald Green Palette with Clean Slate Cards
 */
 
-.mainLabel{
-    -fx-font-weight:bold;
-    -fx-font-size:32px;
-    
+.root {
+    -accent-GREEN: #10b981;
+    -accent-GREEN-hover: #059669;
+    -text-primary: #1e293b;
+    -text-secondary: #64748b;
+    -border-color: #cbd5e1;
 }
-.eyeButton{
+
+.mainLabel {
+    -fx-font-weight: bold;
+    -fx-font-size: 32px;
+    -fx-text-fill: -text-primary;
+}
+
+.eyeButton {
     -fx-background-color: transparent;
     -fx-cursor: hand;
     -fx-padding: 0 5 0 5;
-    -fx-background-radius: 4px
-}
-.eyeButton:hover{
-    -fx-background-color: #E2E8F0;
+    -fx-background-radius: 4px;
 }
 
-.eyeButton:pressed{
-    -fx-background-color: #CBD5E1;
+.eyeButton:hover {
+    -fx-background-color: #f1f5f9;
 }
 
-.main{
-    -fx-border-radius:50px;
-    /*Color temporal*/
-    -fx-background-color: aquamarine;
+.eyeButton:pressed {
+    -fx-background-color: #e2e8f0;
 }
 
-.loginButton{
-    -fx-background-color: #2563EB;
+/* Background of Auth Windows (no more temporal aquamarine) */
+.main {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f0fdf4);
+}
+
+.loginButton {
+    -fx-background-color: -accent-GREEN;
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-background-radius: 6px;
+    -fx-background-radius: 8px;
     -fx-cursor: hand;
-}
-.loginButton:hover{
-    -fx-background-color: #3B82F6;
-    -fx-effect: dropshadow(three-pass-box, rgba(37, 99, 235, 0.3), 8, 0, 0, 4);
-}
-.loginButton:pressed{
-    -fx-background-color: #1D4ED8;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 2, 0, 0, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.2), 8, 0, 0, 4);
 }
 
-.loginButton{
-    -fx-background-color: #2563EB;
-    -fx-text-fill: #FFFFFF;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 6px;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+.loginButton:hover {
+    -fx-background-color: -accent-GREEN-hover;
+    -fx-effect: dropshadow(three-pass-box, rgba(5, 150, 105, 0.35), 10, 0, 0, 5);
 }
 
-.errorLabel{
-    -fx-background-color: #FEF2F2;
-    -fx-text-fill: #991B1B;
-    -fx-border-color: #FCA5A5;
+.loginButton:pressed {
+    -fx-background-color: #047857;
+    -fx-effect: none;
+}
+
+.loginButton:focused {
+    -fx-border-color: #047857;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-border-insets: -3px;
+    -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.4), 10, 0, 0, 4);
+}
+
+.errorLabel {
+    -fx-background-color: #fef2f2;
+    -fx-text-fill: #991b1b;
+    -fx-border-color: #fca5a5;
     -fx-border-width: 1px;
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
-    -fx-effect: dropshadow(three-pass-box, rgba(153, 27, 27, 0.05), 4, 0, 0, 1);
+    -fx-padding: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(153, 27, 27, 0.03), 4, 0, 0, 1);
 }
-.hyperlink{
-    -fx-text-fill: #2563EB;
+
+.hyperlink {
+    -fx-text-fill: -accent-GREEN;
     -fx-underline: true;
+    -fx-font-weight: bold;
 }
 
 .hyperlink:hover {
-    -fx-text-fill: #1D4ED8;
+    -fx-text-fill: -accent-GREEN-hover;
 }
 
 .hyperlink:visited {
-    -fx-text-fill: #2563EB;
+    -fx-text-fill: -accent-GREEN;
 }
 
 .hyperlink:armed {
-    -fx-text-fill: #1E40AF;
+    -fx-text-fill: #047857;
 }
 
-
+/* DatePicker custom styling */
 .datePicker {
     -fx-background-color: white;
-    -fx-border-color: #cccccc;
-    -fx-border-radius: 4px;
-    -fx-background-radius: 4px;
+    -fx-border-color: -border-color;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
 }
 
 .datePicker > .text-field {
     -fx-background-color: transparent;
-    -fx-text-fill: #333333;
+    -fx-text-fill: -text-primary;
 }
 
 .datePicker > .arrow-button {
@@ -105,7 +115,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 
 .datePicker > .arrow-button > .arrow {
     -fx-shape: "M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z";
-    -fx-background-color: #000000; 
+    -fx-background-color: -accent-GREEN; 
     -fx-min-width: 14px;
     -fx-max-width: 14px;
     -fx-min-height: 14px;
@@ -114,38 +124,40 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 
 .datePicker > .arrow-button:hover {
     -fx-cursor: hand;
-    -fx-background-color: #E2E8F0;
+    -fx-background-color: #f1f5f9;
     -fx-background-radius: 4px;
 }
 
 .datePicker > .arrow-button:pressed {
-    -fx-background-color: #CBD5E1;
+    -fx-background-color: #e2e8f0;
     -fx-background-radius: 4px;
 }
 
+/* Avatar styling */
 .avatarCircle {
     -fx-cursor: hand;
-    -fx-transition: all 0.2s ease-in-out;
-    -fx-background-color: #FFFFFF;    
-}
-.avatarCircle:hover {
-    -fx-stroke: #4A90E2;
+    -fx-stroke: -border-color;
     -fx-stroke-width: 2px;
+}
+
+.avatarCircle:hover {
+    -fx-stroke: -accent-GREEN;
+    -fx-stroke-width: 3px;
 }
 
 .removeAvatarButton {
     -fx-background-radius: 100px;
-    -fx-background-color: #EF4444; 
+    -fx-background-color: #ef4444; 
     -fx-cursor: hand;
     -fx-alignment: CENTER;
 }
 
 .removeAvatarButton:hover {
-    -fx-background-color: #DC2626;
+    -fx-background-color: #dc2626;
 }
 
 .removeAvatarButton:pressed {
-    -fx-background-color: #B91C1C;
+    -fx-background-color: #b91c1c;
 }
 
 .removeAvatarButton > .removeIcon {
@@ -155,4 +167,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-max-width: 9px;
     -fx-min-height: 9px;
     -fx-max-height: 9px;
+}
+
+/* ScrollPane transparent styling for register */
+.main-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.main-scroll > .viewport {
+    -fx-background-color: transparent;
 }

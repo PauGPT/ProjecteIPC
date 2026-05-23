@@ -63,7 +63,7 @@
                                 <Insets left="10.0" />
                             </StackPane.margin> 
                         </ImageView> 
-                        <Button mnemonicParsing="false" onAction="#togglePasswordVisibility" styleClass="eyeButton" StackPane.alignment="CENTER_RIGHT"> 
+                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#togglePasswordVisibility" styleClass="eyeButton" StackPane.alignment="CENTER_RIGHT"> 
                             <graphic> 
                                 <ImageView fx:id="imgEye" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true"> 
                                     <image>

@@ -1,62 +1,285 @@
-/* Estilo base para los botones del menú */
+/* 
+   style.css - Global Stylesheet for RunningLaSafor
+   Emerald Green Accent Palette with Slate/Zinc Layout
+*/
 
 .root {
-    -accent-GREEN: #32a852;
+    -accent-GREEN: #10b981;
+    -accent-GREEN-hover: #059669;
+    -accent-GREEN-soft: #d1fae5;
+    -bg-slate: #f8fafc;
+    -text-primary: #1e293b;
+    -text-secondary: #64748b;
+    -border-color: #cbd5e1;
 }
 
+/* Global button styling */
+.button {
+    -fx-background-color: -accent-GREEN;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.15), 6, 0, 0, 3);
+}
+
+.button:hover {
+    -fx-background-color: -accent-GREEN-hover;
+    -fx-effect: dropshadow(three-pass-box, rgba(5, 150, 105, 0.3), 8, 0, 0, 4);
+}
+
+.button:pressed {
+    -fx-background-color: #047857;
+    -fx-effect: none;
+}
+
+.button:disabled {
+    -fx-background-color: #cbd5e1;
+    -fx-text-fill: #94a3b8;
+    -fx-effect: none;
+    -fx-opacity: 0.7;
+}
+
+/* Global text field styling */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-background-radius: 6px;
+    -fx-border-color: -border-color;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-padding: 8 12;
+    -fx-text-fill: -text-primary;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: -accent-GREEN;
+    -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.12), 6, 0, 0, 2);
+}
+
+/* Toolbar Menu ToggleButtons */
 .menu-button {
-    -fx-background-color: transparent; /* Sin fondo */
+    -fx-background-color: transparent;
     -fx-background-radius: 0;
     -fx-border-color: transparent;
-    -fx-text-fill: #555555; /* Gris oscuro */
+    -fx-text-fill: -text-secondary;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-padding: 0 20 0 20; /* Espaciado lateral */
+    -fx-padding: 0 20 0 20;
+    -fx-cursor: hand;
 }
 
-/* Efecto al pasar el ratón (Hover) */
 .menu-button:hover {
-    -fx-background-color: #f4f4f4; /* Gris muy clarito */
-    -fx-text-fill: #000000;
+    -fx-background-color: #e2e8f0;
+    -fx-text-fill: -text-primary;
 }
 
-/* Efecto cuando el botón está seleccionado (La pestaña activa) */
 .menu-button:selected {
     -fx-background-color: transparent;
-    -fx-text-fill: -accent-GREEN; /* Color verd per a acentuar */
-    -fx-border-color: -accent-GREEN; /* Línea de color */
-    -fx-border-width: 0 0 3 0; /* Solo línea inferior de 3px */
+    -fx-text-fill: -accent-GREEN-hover;
+    -fx-border-color: -accent-GREEN;
+    -fx-border-width: 0 0 3 0;
 }
 
-/* Estilo total para el botón del logo */
+/* Logo Button specific styling */
 .logo-button {
-    -fx-background-color: transparent; /* Fondo transparente */
-    -fx-background-insets: 0; /* Elimina cualquier espacio interno del fondo */
-    -fx-background-radius: 0; /* Esquinas rectas si las hubiera */
-    -fx-border-color: transparent; /* Borde transparente */
-    -fx-border-width: 0; /* Ancho del borde a cero */
-    -fx-padding: 0; /* Elimina el espacio entre el borde y la imagen */
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+    -fx-cursor: hand;
 }
 
-/* MUY IMPORTANTE: Eliminar el estilo cuando el botón tiene el FOCO */
 .logo-button:focused {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-background-insets: 0;
-    /* Si quieres una sutil indicación de foco para accesibilidad, 
-       podrías usar un drop-shadow, pero para un logo limpio, mejor nada */
 }
 
-.left-banner {
+.logo-button:hover {
+    -fx-background-color: rgba(16, 185, 129, 0.08);
+    -fx-effect: none;
+}
 
+.logo-button:pressed {
+    -fx-background-color: rgba(16, 185, 129, 0.16);
+    -fx-effect: none;
+}
+
+/* MenuItem hover / keyboard-focused highlight in green */
+.context-menu .menu-item:focused {
+    -fx-background-color: -accent-GREEN;
+    -fx-text-fill: white;
+}
+
+
+/* Left side banner background */
+.left-banner {
     -fx-background-image: url('/resources/main/left_side_banner.png');
     -fx-background-size: cover;
     -fx-background-position: center center;
     -fx-background-repeat: no-repeat;
-
 }
 
+/* Right side banner background */
+.right-banner {
+    -fx-background-image: url('/resources/main/right_side_banner2.png');
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+}
+
+/* Hero text styling for unlogged dashboard */
+.dashboard-hero-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-primary;
+    -fx-padding: 10 0 20 0;
+}
+
+
+/* ListView styling */
+.list-view {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-padding: 5;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text-primary;
+    -fx-padding: 10 15;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-font-size: 13px;
+    -fx-font-weight: normal;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #f1f5f9;
+    -fx-text-fill: black;
+    -fx-cursor: hand;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: -accent-GREEN-soft;
+    -fx-text-fill: -accent-GREEN-hover;
+    -fx-font-weight: bold;
+}
+
+/* ScrollPane and minimal scrollbar styling */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical,
+.scroll-pane .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+    -fx-preferred-width: 8;
+}
+
+.scroll-pane .scroll-bar .thumb {
+    -fx-background-color: #cbd5e1;
+    -fx-background-radius: 8;
+}
+
+.scroll-pane .scroll-bar .thumb:hover {
+    -fx-background-color: #94a3b8;
+}
+
+/* Cards (stats containers) */
 .stat-card {
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.08), 8, 0, 0, 4);
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.02), 8, 0, 0, 4);
+    -fx-padding: 15;
 }
+
+/* Charts */
+.chart {
+    -fx-padding: 10px;
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+}
+
+.chart-plot-background {
+    -fx-background-color: #f8fafc;
+}
+
+.chart-vertical-grid-lines, .chart-horizontal-grid-lines {
+    -fx-stroke: #f1f5f9;
+    -fx-stroke-width: 1px;
+}
+
+/* AreaChart series theme coloring */
+.default-color0.chart-series-area-fill {
+    -fx-fill: linear-gradient(to bottom, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.01));
+}
+
+.default-color0.chart-series-area-line {
+    -fx-stroke: -accent-GREEN;
+    -fx-stroke-width: 2.5px;
+}
+
+/* Destructive / Delete Button */
+.button.destructive-button {
+    -fx-background-color: #e74c3c;
+    -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.15), 6, 0, 0, 3);
+}
+
+.button.destructive-button:hover {
+    -fx-background-color: #c0392b;
+    -fx-effect: dropshadow(three-pass-box, rgba(192, 57, 43, 0.3), 8, 0, 0, 4);
+}
+
+.button.destructive-button:pressed {
+    -fx-background-color: #962d22;
+    -fx-effect: none;
+}
+
+.button.destructive-button:disabled {
+    -fx-background-color: #cbd5e1;
+    -fx-text-fill: #94a3b8;
+    -fx-effect: none;
+    -fx-opacity: 0.7;
+}
+
+/* Trash/delete map button in TableView */
+.button.boto-paperera {
+    -fx-background-color: #f87171;
+    -fx-padding: 4 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(248, 113, 113, 0.15), 6, 0, 0, 3);
+}
+
+.button.boto-paperera:hover {
+    -fx-background-color: #ef4444;
+    -fx-effect: dropshadow(three-pass-box, rgba(239, 68, 68, 0.35), 8, 0, 0, 4);
+}
+
+.button.boto-paperera:pressed {
+    -fx-background-color: #dc2626;
+    -fx-effect: none;
+}
+
+/* Center TableColumn cell contents */
+.columna-centrada {
+    -fx-alignment: CENTER;
+}
+
 

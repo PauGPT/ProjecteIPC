@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -14,10 +15,15 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.TextFlow?>
 
-<VBox alignment="CENTER" prefHeight="680.0" prefWidth="600.0" styleClass="main" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterFXMLController">
-    <children>
-        <!-- Bloque contenedor: Fijado estrictamente en 300px de ancho máximo y mínimo -->
-        <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="300.0" spacing="8.0">
+<ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" styleClass="main-scroll" stylesheets="@../styles/login.css" vbarPolicy="AS_NEEDED" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RegisterFXMLController">
+   <content>
+      <VBox alignment="CENTER" prefHeight="680.0" prefWidth="600.0" styleClass="main">
+         <padding>
+            <Insets bottom="30.0" top="30.0" />
+         </padding>
+         <children>
+            <!-- Bloque contenedor: Fijado estrictamente en 300px de ancho máximo y mínimo -->
+            <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="300.0" spacing="8.0">
             <children>
                 <Label styleClass="mainLabel" text="Crear compte">
                     <VBox.margin>
@@ -83,7 +89,7 @@
                                 <Insets left="10.0" />
                             </StackPane.margin> 
                         </ImageView> 
-                        <Button mnemonicParsing="false" onAction="#togglePasswordVisibility" styleClass="eyeButton" StackPane.alignment="CENTER_RIGHT"> 
+                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#togglePasswordVisibility" styleClass="eyeButton" StackPane.alignment="CENTER_RIGHT"> 
                             <graphic> 
                                 <ImageView fx:id="imgEye" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true"> 
                                     <image>
@@ -173,6 +179,8 @@
                     </VBox.margin>
                 </TextFlow>
             </children>
-        </VBox>
-    </children>
-</VBox>
+            </VBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

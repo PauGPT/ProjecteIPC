@@ -90,101 +90,101 @@ public class RegisterFXMLController implements Initializable {
 
         passTextField.textProperty().bindBidirectional(passField.textProperty());
 
-        userField.focusedProperty().addListener((value, oldValue, newValue) -> {
-            if (!newValue) {
-
-                if (userField.getText().isEmpty()) {
-                    errorUser = true;
-                    mostrarErrorEnCampo(userContainer, "El nom d'usuari no pot estar buit.");
-                } else if (!User.checkNickName(userField.getText())) {
-                    errorUser = true;
-                    mostrarErrorEnCampo(userContainer, "Entre 6 i 15 caràcters, només lletres, dígits, guió o subguion.");
-
-                } else if (app.nickNameExists(userField.getText())) {
-                    errorUser = true;
-                    mostrarErrorEnCampo(userContainer, "L'usuari ja existeix");
-
-                } else {
-                    errorUser = false;
-                    ocultarErrorEnCampo(userContainer);
-                }
-            }
-        });
-
-        emailField.focusedProperty().addListener((value, oldValue, newValue) -> {
-            if (!newValue) {
-
-                if (emailField.getText().isEmpty()) {
-                    errorEmail = true;
-                    mostrarErrorEnCampo(emailContainer, "El mail no pot estar buit.");
-                } else if (!User.checkEmail(emailField.getText())) {
-                    errorEmail = true;
-                    mostrarErrorEnCampo(emailContainer, "El format ha de ser usuari@domini");
-
-                } else if (false) {
-                    errorEmail = true;
-                    mostrarErrorEnCampo(emailContainer, "El mail ja existeix");
-
-                } else {
-                    errorEmail = false;
-                    ocultarErrorEnCampo(emailContainer);
-                }
-            }
-        });
-
-        passField.focusedProperty().addListener((value, oldValue, newValue) -> {
-            if (!newValue) {
-                if (passField.getText().isEmpty()) {
-                    errorPassword = true;
-                    mostrarErrorEnCampo(passwordContainer, "La contrasenya no pot estar buida");
-                } else if (!User.checkPassword(passField.getText())) {
-                    errorPassword = true;
-                    mostrarErrorEnCampo(passwordContainer, "La contrasenya ha de tenir entre 8 i 20 caràcters, amb almenys una majúscula, una minúscula, un dígit i un símbol");
-                } else {
-                    errorPassword = false;
-                    ocultarErrorEnCampo(passwordContainer);
-                }
-            }
-        });
-
-        passTextField.focusedProperty().addListener((value, oldValue, newValue) -> {
-            if (!newValue) {
-                String password = !passTextField.getText().isEmpty() ? passTextField.getText() : passField.getText();
-                password = password.trim();
-
-                if (password.isEmpty()) {
-                    errorPassword = true;
-                    mostrarErrorEnCampo(passwordContainer, "La contrasenya no pot estar buida");
-                } else if (!User.checkPassword(password)) {
-                    errorPassword = true;
-                    mostrarErrorEnCampo(passwordContainer, "La contrasenya ha de tenir entre 8 i 20 caràcters, amb almenys una majúscula, una minúscula, un dígit i un símbol");
-                } else {
-                    errorPassword = false;
-                    ocultarErrorEnCampo(passwordContainer);
-                }
-            }
-        });
-
-        birthDatePicker.focusedProperty().addListener((value, oldValue, newValue) -> {
-            if (!newValue) {
-                if (birthDatePicker.getValue() == null) {
-                    errorBirthDate = true;
-                    mostrarErrorEnCampo(birthContainer, "La data de naixement no pot estar buida");
-                } else if (!User.isOlderThan(birthDatePicker.getValue(), 12)) {
-                    errorBirthDate = true;
-                    mostrarErrorEnCampo(birthContainer, "Has de tindre més de 12 anys per a registrar-te");
-                } else {
-                    errorBirthDate = false;
-                    ocultarErrorEnCampo(birthContainer);
-                }
-            }
-        });
-
-        //Quitar el foco automático inicial de los campos de texto
+        //Quitar el foco automático inicial de los campos de texto y registrar los listeners después
         Platform.runLater(() -> {
             if (userField.getScene() != null) {
                 userField.getScene().getRoot().requestFocus();
             }
+
+            userField.focusedProperty().addListener((value, oldValue, newValue) -> {
+                if (!newValue) {
+
+                    if (userField.getText().isEmpty()) {
+                        errorUser = true;
+                        mostrarErrorEnCampo(userContainer, "El nom d'usuari no pot estar buit.");
+                    } else if (!User.checkNickName(userField.getText())) {
+                        errorUser = true;
+                        mostrarErrorEnCampo(userContainer, "Entre 6 i 15 caràcters, només lletres, dígits, guió o subguion.");
+
+                    } else if (app.nickNameExists(userField.getText())) {
+                        errorUser = true;
+                        mostrarErrorEnCampo(userContainer, "L'usuari ja existeix");
+
+                    } else {
+                        errorUser = false;
+                        ocultarErrorEnCampo(userContainer);
+                    }
+                }
+            });
+
+            emailField.focusedProperty().addListener((value, oldValue, newValue) -> {
+                if (!newValue) {
+
+                    if (emailField.getText().isEmpty()) {
+                        errorEmail = true;
+                        mostrarErrorEnCampo(emailContainer, "El mail no pot estar buit.");
+                    } else if (!User.checkEmail(emailField.getText())) {
+                        errorEmail = true;
+                        mostrarErrorEnCampo(emailContainer, "El format ha de ser usuari@domini");
+
+                    } else if (false) {
+                        errorEmail = true;
+                        mostrarErrorEnCampo(emailContainer, "El mail ja existeix");
+
+                    } else {
+                        errorEmail = false;
+                        ocultarErrorEnCampo(emailContainer);
+                    }
+                }
+            });
+
+            passField.focusedProperty().addListener((value, oldValue, newValue) -> {
+                if (!newValue) {
+                    if (passField.getText().isEmpty()) {
+                        errorPassword = true;
+                        mostrarErrorEnCampo(passwordContainer, "La contrasenya no pot estar buida");
+                    } else if (!User.checkPassword(passField.getText())) {
+                        errorPassword = true;
+                        mostrarErrorEnCampo(passwordContainer, "La contrasenya ha de tenir entre 8 i 20 caràcters, amb almenys una majúscula, una minúscula, un dígit i un símbol");
+                    } else {
+                        errorPassword = false;
+                        ocultarErrorEnCampo(passwordContainer);
+                    }
+                }
+            });
+
+            passTextField.focusedProperty().addListener((value, oldValue, newValue) -> {
+                if (!newValue) {
+                    String password = !passTextField.getText().isEmpty() ? passTextField.getText() : passField.getText();
+                    password = password.trim();
+
+                    if (password.isEmpty()) {
+                        errorPassword = true;
+                        mostrarErrorEnCampo(passwordContainer, "La contrasenya no pot estar buida");
+                    } else if (!User.checkPassword(password)) {
+                        errorPassword = true;
+                        mostrarErrorEnCampo(passwordContainer, "La contrasenya ha de tenir entre 8 i 20 caràcters, amb almenys una majúscula, una minúscula, un dígit i un símbol");
+                    } else {
+                        errorPassword = false;
+                        ocultarErrorEnCampo(passwordContainer);
+                    }
+                }
+            });
+
+            birthDatePicker.focusedProperty().addListener((value, oldValue, newValue) -> {
+                if (!newValue) {
+                    if (birthDatePicker.getValue() == null) {
+                        errorBirthDate = true;
+                        mostrarErrorEnCampo(birthContainer, "La data de naixement no pot estar buida");
+                    } else if (!User.isOlderThan(birthDatePicker.getValue(), 12)) {
+                        errorBirthDate = true;
+                        mostrarErrorEnCampo(birthContainer, "Has de tindre més de 12 anys per a registrar-te");
+                    } else {
+                        errorBirthDate = false;
+                        ocultarErrorEnCampo(birthContainer);
+                    }
+                }
+            });
         });
 
     }
@@ -280,7 +280,7 @@ public class RegisterFXMLController implements Initializable {
     @FXML
     private void registrarUsuario(ActionEvent event) {
 
-        if (!errorUser && !errorEmail && !errorEmail && !errorBirthDate) {
+        if (!errorUser && !errorEmail && !errorPassword && !errorBirthDate) {
 
             errorRegister.setVisible(false);
             errorRegister.setManaged(false);

@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -92,6 +93,10 @@ public class ActivitatsController implements Initializable {
     private double[] currentAccumulatedDistances;
     private MapProjection currentProjection;
     private Circle highlightMarker;
+    private Circle chartHighlightMarker;
+    private Line chartHighlightLine;
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -167,6 +172,12 @@ public class ActivitatsController implements Initializable {
                 if (highlightMarker != null) {
                     highlightMarker.setVisible(false);
                 }
+                if (chartHighlightMarker != null) {
+                    chartHighlightMarker.setVisible(false);
+                }
+                if (chartHighlightLine != null) {
+                    chartHighlightLine.setVisible(false);
+                }
                 return;
             }
             
@@ -187,12 +198,88 @@ public class ActivitatsController implements Initializable {
                 highlightMarker.setCenterX(p.getX());
                 highlightMarker.setCenterY(p.getY());
                 highlightMarker.setVisible(true);
+
+                // Show circle and line on the chart
+                if (chartHighlightMarker == null) {
+                    chartHighlightMarker = new Circle(0, 0, 5, Color.web("#10b981")); // Small green circle
+                    chartHighlightMarker.setStroke(Color.BLACK);
+                    chartHighlightMarker.setStrokeWidth(1.5);
+                    chartHighlightMarker.setMouseTransparent(true);
+                }
+
+                if (chartHighlightLine == null) {
+                    chartHighlightLine = new Line(0, 0, 0, 0);
+                    chartHighlightLine.setStroke(Color.BLACK); // Solid black guide line
+                    chartHighlightLine.setStrokeWidth(1.0);
+                    chartHighlightLine.setMouseTransparent(true);
+                }
+
+                // Add to the plot area parent group or pane if not already present
+                Node plotBackground = elevationChart.lookup(".chart-plot-background");
+                if (plotBackground != null) {
+                    Parent plotParent = plotBackground.getParent();
+                    boolean added = false;
+                    if (plotParent instanceof javafx.scene.Group) {
+                        javafx.scene.Group plotGroup = (javafx.scene.Group) plotParent;
+                        if (!plotGroup.getChildren().contains(chartHighlightLine)) {
+                            plotGroup.getChildren().add(chartHighlightLine);
+                        }
+                        if (!plotGroup.getChildren().contains(chartHighlightMarker)) {
+                            plotGroup.getChildren().add(chartHighlightMarker);
+                        }
+                        added = true;
+                    } else if (plotParent instanceof Pane) {
+                        Pane plotPane = (Pane) plotParent;
+                        if (!plotPane.getChildren().contains(chartHighlightLine)) {
+                            plotPane.getChildren().add(chartHighlightLine);
+                        }
+                        if (!plotPane.getChildren().contains(chartHighlightMarker)) {
+                            plotPane.getChildren().add(chartHighlightMarker);
+                        }
+                        added = true;
+                    }
+                    
+                    if (added) {
+                        double distVal = currentAccumulatedDistances[closestIndex];
+                        double elevVal = closestPoint.getElevation();
+                        
+                        double displayX = xAxisChart.getDisplayPosition(distVal);
+                        double displayY = yAxisChart.getDisplayPosition(elevVal);
+                        
+                        // Convert axis-relative coordinates to plotParent-relative coordinates
+                        double sceneX = xAxisChart.localToScene(displayX, 0).getX();
+                        double plotX = plotParent.sceneToLocal(sceneX, 0).getX();
+                        
+                        double sceneY = yAxisChart.localToScene(0, displayY).getY();
+                        double plotY = plotParent.sceneToLocal(0, sceneY).getY();
+                        
+                        chartHighlightMarker.setCenterX(plotX);
+                        chartHighlightMarker.setCenterY(plotY);
+                        chartHighlightMarker.setVisible(true);
+                        
+                        chartHighlightLine.setStartX(plotX);
+                        chartHighlightLine.setStartY(plotBackground.getLayoutY());
+                        chartHighlightLine.setEndX(plotX);
+                        chartHighlightLine.setEndY(plotBackground.getLayoutY() + plotBackground.getLayoutBounds().getHeight());
+                        chartHighlightLine.setVisible(true);
+
+                        // Ensure proper Z-ordering (marker on top of line)
+                        chartHighlightLine.toFront();
+                        chartHighlightMarker.toFront();
+                    }
+                }
             }
         });
         
         elevationChart.setOnMouseExited(event -> {
             if (highlightMarker != null) {
                 highlightMarker.setVisible(false);
+            }
+            if (chartHighlightMarker != null) {
+                chartHighlightMarker.setVisible(false);
+            }
+            if (chartHighlightLine != null) {
+                chartHighlightLine.setVisible(false);
             }
         });
     }    
@@ -215,6 +302,13 @@ public class ActivitatsController implements Initializable {
         mapPane.getChildren().removeIf(node -> node != mapImageView);
         elevationChart.getData().clear();
         xAxisChart.setAutoRanging(true);
+        if (chartHighlightMarker != null) {
+            chartHighlightMarker.setVisible(false);
+        }
+        if (chartHighlightLine != null) {
+            chartHighlightLine.setVisible(false);
+        }
+        
         mapScale.setX(1.0);
         mapScale.setY(1.0);
         btnDeleteActivity.setDisable(true);
@@ -375,7 +469,7 @@ public class ActivitatsController implements Initializable {
 
         // Initialize and add the highlight marker (hidden by default)
         if (highlightMarker == null) {
-            highlightMarker = new Circle(0, 0, 8, Color.GOLD);
+            highlightMarker = new Circle(0, 0, 8, Color.web("#10b981"));
             highlightMarker.setStroke(Color.BLACK);
             highlightMarker.setStrokeWidth(2.0);
         }
@@ -483,7 +577,9 @@ public class ActivitatsController implements Initializable {
         lblFile.setStyle("-fx-text-fill: #7f8c8d; -fx-font-style: italic;");
         
         Button btnBrowse = new Button("Seleccionar GPX...");
-        btnBrowse.setStyle("-fx-background-color: #34495e; -fx-text-fill: white; -fx-cursor: hand;");
+        btnBrowse.setStyle("-fx-background-color: #10b981; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 6px; -fx-font-weight: bold;");
+        btnBrowse.setOnMouseEntered(e -> btnBrowse.setStyle("-fx-background-color: #059669; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 6px; -fx-font-weight: bold;"));
+        btnBrowse.setOnMouseExited(e -> btnBrowse.setStyle("-fx-background-color: #10b981; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 6px; -fx-font-weight: bold;"));
         
         ComboBox<MapRegion> comboMaps = new ComboBox<>();
         comboMaps.setPrefWidth(250);

@@ -39,7 +39,7 @@ public class App extends Application {
         
         mainController = loader.getController();
         
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/green_logo_small.png")));
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/resources/logo_circular.png")));
         Scene scene = new Scene(root);
         stage.setTitle("Running La Safor");
         stage.setScene(scene);
