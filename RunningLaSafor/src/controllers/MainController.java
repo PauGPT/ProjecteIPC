@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -63,6 +64,8 @@ public class MainController implements Initializable {
     @FXML
     private HBox toolbar;
 
+    private boolean isProgrammaticDeselection = false;
+
     /**
      * Initializes the controller class.
      */
@@ -76,6 +79,14 @@ public class MainController implements Initializable {
         updateMenuAvatar();
         //Actualitzar l'estat de la barra d'eines (toolbar)
         updateToolbarState();
+
+        if (menu != null) {
+            menu.selectedToggleProperty().addListener((obsVal, oldVal, newVal) -> {
+                if (newVal == null && !isProgrammaticDeselection) {
+                    menu.selectToggle(oldVal);
+                }
+            });
+        }
     }    
 
 
@@ -141,5 +152,68 @@ public class MainController implements Initializable {
         }
         
     }
-    
+
+    @FXML
+    private void handleActivitats(ActionEvent event) {
+        loadView("/views/Activitats.fxml");
+    }
+
+    @FXML
+    private void handleMapes(ActionEvent event) {
+        loadView("/views/Mapa.fxml");
+    }
+
+    @FXML
+    private void handleModificarPerfil(ActionEvent event) {
+        deselectMenuButtons();
+        loadView("/views/updateUserFXML.fxml");
+    }
+
+    @FXML
+    private void handleHistorial(ActionEvent event) {
+        deselectMenuButtons();
+        loadView("/views/historialDeSesiones.fxml");
+    }
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        deselectMenuButtons();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Tancar sessió");
+        alert.setHeaderText(null);
+        alert.setContentText("Estàs segur que vols tancar la sessió?");
+        
+        alert.showAndWait().ifPresent(response -> {
+            if (response == javafx.scene.control.ButtonType.OK) {
+                SportActivityApp.getInstance().logout();
+                updateMenuAvatar();
+                updateToolbarState();
+                loadView("/views/DashboardUnlogged.fxml");
+            }
+        });
+    }
+
+    @FXML
+    private void handleLogo(ActionEvent event) {
+        deselectMenuButtons();
+        if (SportActivityApp.getInstance().getCurrentUser() != null) {
+            loadView("/views/DashboardLogged.fxml");
+        } else {
+            loadView("/views/DashboardUnlogged.fxml");
+        }
+    }
+
+    public void deselectMenuButtons() {
+        if (menu != null) {
+            isProgrammaticDeselection = true;
+            menu.selectToggle(null);
+            isProgrammaticDeselection = false;
+        }
+    }
+
+    public void selectActivitats() {
+        if (activitatsButton != null) {
+            activitatsButton.setSelected(true);
+        }
+    }
 }

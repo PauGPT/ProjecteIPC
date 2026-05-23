@@ -49,7 +49,7 @@
    <top>
       <HBox fx:id="toolbar" prefHeight="60.0">
          <children>
-          <Button fx:id="logoButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="logo-button">
+          <Button fx:id="logoButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleLogo" styleClass="logo-button">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -61,7 +61,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <ToggleButton fx:id="activitatsButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-button" text="Activitats">
+            <ToggleButton fx:id="activitatsButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleActivitats" styleClass="menu-button" text="Activitats">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -69,7 +69,7 @@
                   <ToggleGroup fx:id="menu" />
                </toggleGroup>
             </ToggleButton>
-            <ToggleButton fx:id="mapesButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" styleClass="menu-button" text="Mapes" toggleGroup="$menu">
+            <ToggleButton fx:id="mapesButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleMapes" styleClass="menu-button" text="Mapes" toggleGroup="$menu">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -77,9 +77,9 @@
             <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
             <MenuButton maxHeight="1.7976931348623157E308" mnemonicParsing="false">
               <items>
-                <MenuItem fx:id="modificarPerfilButton" mnemonicParsing="false" text="Modificar perfil" />
-                <MenuItem fx:id="historialButton" mnemonicParsing="false" text="Historial de sessions" />
-                  <MenuItem fx:id="logoutButton" mnemonicParsing="false" text="Tancar sessió" />
+                <MenuItem fx:id="modificarPerfilButton" mnemonicParsing="false" onAction="#handleModificarPerfil" text="Modificar perfil" />
+                <MenuItem fx:id="historialButton" mnemonicParsing="false" onAction="#handleHistorial" text="Historial de sessions" />
+                  <MenuItem fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="Tancar sessió" />
               </items>
                <graphic>
                   <Circle fx:id="avatarCircleMenu" radius="15.0" stroke="#797979" strokeType="INSIDE" strokeWidth="0.0">

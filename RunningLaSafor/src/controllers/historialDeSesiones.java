@@ -49,8 +49,6 @@ public class historialDeSesiones implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         app = SportActivityApp.getInstance();
         
-        app.login("juan_23", "juan_23!");
-        
         if (app.getCurrentUser() != null) {
             sesiones = FXCollections.observableArrayList(app.getSessionsByUser(app.getCurrentUser()));
         } else {

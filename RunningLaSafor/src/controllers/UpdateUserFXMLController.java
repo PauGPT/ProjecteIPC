@@ -4,6 +4,7 @@
  */
 package controllers;
 
+import application.App;
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
@@ -287,6 +288,8 @@ public class UpdateUserFXMLController implements Initializable {
                 app.updateCurrentUser(email, pass, birthDate, (Image) null);
 
             }
+
+            App.getMainController().updateMenuAvatar();
 
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
             alert.setTitle("Actualització de dades");
