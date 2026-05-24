@@ -106,138 +106,162 @@ public class RegisterFXMLController implements Initializable {
         passTextField.textProperty().bindBidirectional(passField.textProperty());
         setupPasswordRequirements();
 
-        //Quitar el foco automático inicial de los campo de texto 
+        // Quitar el foco automático inicial de los campos de texto
         Platform.runLater(() -> {
             if (userField.getScene() != null) {
                 userField.getScene().getRoot().requestFocus();
             }
+        });
 
-            userField.focusedProperty().addListener((value, oldValue, newValue) -> {
-                if (!newValue) {
-
-                    if (userField.getText().isEmpty()) {
-                        errorUser = true;
-                        mostrarErrorEnCampo(userContainer, "El nom d'usuari no pot estar buit.");
-                    } else if (!User.checkNickName(userField.getText())) {
-                        errorUser = true;
-                        mostrarErrorEnCampo(userContainer, "Entre 6 i 15 caràcters, només lletres, dígits, guió o subguion.");
-
-                    } else if (app.nickNameExists(userField.getText())) {
-                        errorUser = true;
-                        mostrarErrorEnCampo(userContainer, "L'usuari ja existeix");
-
-                    } else {
-                        errorUser = false;
-                        ocultarErrorEnCampo(userContainer);
-                    }
+        userField.focusedProperty().addListener((value, oldValue, newValue) -> {
+            if (!newValue) {
+                if (userField.getText().isEmpty()) {
+                    errorUser = true;
+                    mostrarErrorEnCampo(userContainer, "El nom d'usuari no pot estar buit.");
+                } else if (!User.checkNickName(userField.getText())) {
+                    errorUser = true;
+                    mostrarErrorEnCampo(userContainer, "Entre 6 i 15 caràcters, només lletres, dígits, guió o subguion.");
+                } else if (app.nickNameExists(userField.getText())) {
+                    errorUser = true;
+                    mostrarErrorEnCampo(userContainer, "L'usuari ja existeix");
+                } else {
+                    errorUser = false;
+                    ocultarErrorEnCampo(userContainer);
                 }
-            });
+            }
+        });
 
-            emailField.focusedProperty().addListener((value, oldValue, newValue) -> {
-                if (!newValue) {
-
-                    if (emailField.getText().isEmpty()) {
-                        errorEmail = true;
-                        mostrarErrorEnCampo(emailContainer, "El mail no pot estar buit.");
-                    } else if (!User.checkEmail(emailField.getText())) {
-                        errorEmail = true;
-                        mostrarErrorEnCampo(emailContainer, "El format ha de ser usuari@domini");
-
-                    } else if (false) {
-                        errorEmail = true;
-                        mostrarErrorEnCampo(emailContainer, "El mail ja existeix");
-
-                    } else {
-                        errorEmail = false;
-                        ocultarErrorEnCampo(emailContainer);
-                    }
+        userField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (errorUser) {
+                if (!newValue.isEmpty() && User.checkNickName(newValue) && !app.nickNameExists(newValue)) {
+                    errorUser = false;
+                    ocultarErrorEnCampo(userContainer);
                 }
-            });
+            }
+        });
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-            birthDatePicker.setConverter(new StringConverter<LocalDate>() {
-                @Override
-                public String toString(LocalDate date) {
-                    if (date != null) {
-                        return formatter.format(date);
-                    }
-                    return "";
+        emailField.focusedProperty().addListener((value, oldValue, newValue) -> {
+            if (!newValue) {
+                if (emailField.getText().isEmpty()) {
+                    errorEmail = true;
+                    mostrarErrorEnCampo(emailContainer, "El mail no pot estar buit.");
+                } else if (!User.checkEmail(emailField.getText())) {
+                    errorEmail = true;
+                    mostrarErrorEnCampo(emailContainer, "El format ha de ser usuari@domini");
+                } else {
+                    errorEmail = false;
+                    ocultarErrorEnCampo(emailContainer);
                 }
+            }
+        });
 
-                @Override
-                public LocalDate fromString(String string) {
-                    if (string != null && !string.trim().isEmpty()) {
-                        try {
-                            return LocalDate.parse(string, formatter);
-                        } catch (Exception e) {
-                            return null;
-                        }
-                    }
-                    return null;
+        emailField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (errorEmail) {
+                if (!newValue.isEmpty() && User.checkEmail(newValue)) {
+                    errorEmail = false;
+                    ocultarErrorEnCampo(emailContainer);
                 }
-            });
+            }
+        });
 
-            TextField dateTextField = birthDatePicker.getEditor();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-            dateTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue.length() < oldValue.length()) {
-                    return;
+        birthDatePicker.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return formatter.format(date);
                 }
+                return "";
+            }
 
-                if (newValue.length() > 10) {
-                    dateTextField.setText(oldValue);
-                    return;
-                }
-
-                String cleaned = newValue.replaceAll("[^0-9/]", "");
-                String digits = cleaned.replaceAll("/", "");
-                StringBuilder sb = new StringBuilder();
-
-                for (int i = 0; i < digits.length(); i++) {
-                    sb.append(digits.charAt(i));
-                    if (i == 1 || i == 3) {
-                        sb.append("/");
-                    }
-                }
-
-                if (!newValue.equals(sb.toString())) {
-                    dateTextField.setText(sb.toString());
-                    dateTextField.positionCaret(sb.length());
-                }
-            });
-
-            birthDatePicker.focusedProperty().addListener((value, oldValue, newValue) -> {
-                if (!newValue) {
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.trim().isEmpty()) {
                     try {
-                        String text = birthDatePicker.getEditor().getText();
-                        if (text != null && !text.isEmpty()) {
-                            birthDatePicker.setValue(birthDatePicker.getConverter().fromString(text));
-                        }
+                        return LocalDate.parse(string, formatter);
                     } catch (Exception e) {
-                        birthDatePicker.setValue(null);
+                        return null;
                     }
+                }
+                return null;
+            }
+        });
 
-                    if (birthDatePicker.getValue() == null) {
-                        errorBirthDate = true;
-                        mostrarErrorEnCampo(birthContainer, "La data de naixement no pot estar buida");
-                    } else if (!User.isOlderThan(birthDatePicker.getValue(), 12)) {
-                        errorBirthDate = true;
-                        mostrarErrorEnCampo(birthContainer, "Has de tindre més de 12 anys per a registrar-te");
-                    } else {
+        TextField dateTextField = birthDatePicker.getEditor();
+
+        dateTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() < oldValue.length()) {
+                return;
+            }
+
+            if (newValue.length() > 10) {
+                dateTextField.setText(oldValue);
+                return;
+            }
+
+            String cleaned = newValue.replaceAll("[^0-9/]", "");
+            String digits = cleaned.replaceAll("/", "");
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < digits.length(); i++) {
+                sb.append(digits.charAt(i));
+                if (i == 1 || i == 3) {
+                    sb.append("/");
+                }
+            }
+
+            if (!newValue.equals(sb.toString())) {
+                dateTextField.setText(sb.toString());
+                dateTextField.positionCaret(sb.length());
+            }
+
+            if (errorBirthDate && sb.length() == 10) {
+                try {
+                    LocalDate date = LocalDate.parse(sb.toString(), formatter);
+                    if (User.isOlderThan(date, 12)) {
                         errorBirthDate = false;
                         ocultarErrorEnCampo(birthContainer);
                     }
+                } catch (Exception e) {
                 }
-            });
-
+            }
         });
 
+        birthDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (errorBirthDate && newVal != null && User.isOlderThan(newVal, 12)) {
+                errorBirthDate = false;
+                ocultarErrorEnCampo(birthContainer);
+            }
+        });
+
+        birthDatePicker.focusedProperty().addListener((value, oldValue, newValue) -> {
+            if (!newValue) {
+                try {
+                    String text = birthDatePicker.getEditor().getText();
+                    if (text != null && !text.isEmpty()) {
+                        birthDatePicker.setValue(birthDatePicker.getConverter().fromString(text));
+                    }
+                } catch (Exception e) {
+                    birthDatePicker.setValue(null);
+                }
+
+                if (birthDatePicker.getValue() == null) {
+                    errorBirthDate = true;
+                    mostrarErrorEnCampo(birthContainer, "La data de naixement no pot estar buida");
+                } else if (!User.isOlderThan(birthDatePicker.getValue(), 12)) {
+                    errorBirthDate = true;
+                    mostrarErrorEnCampo(birthContainer, "Has de tindre més de 12 anys per a registrar-te");
+                } else {
+                    errorBirthDate = false;
+                    ocultarErrorEnCampo(birthContainer);
+                }
+            }
+        });
     }
 
     @FXML
     private void goToLogin(ActionEvent event) {
-
         App.getMainController().loadView("/views/Login.fxml");
     }
 
@@ -261,13 +285,11 @@ public class RegisterFXMLController implements Initializable {
             avatarPlaceholder.setVisible(false);
             btnRemoveAvatar.setVisible(true);
             btnRemoveAvatar.setManaged(true);
-
         }
     }
 
     @FXML
     private void resetAvatar(ActionEvent event) {
-
         selectedAvatarFile = null;
         avatarCircle.setFill(Color.web("#fff4f4"));
 
@@ -330,11 +352,19 @@ public class RegisterFXMLController implements Initializable {
             if (passField.isFocused()) {
                 updateRequirements(newValue);
             }
+            if (errorPassword && !newValue.trim().isEmpty() && User.checkPassword(newValue.trim())) {
+                errorPassword = false;
+                ocultarErrorEnCampo(passwordContainer);
+            }
         });
 
         passTextField.textProperty().addListener((obs, oldVal, newValue) -> {
             if (passTextField.isFocused()) {
                 updateRequirements(newValue);
+            }
+            if (errorPassword && !newValue.trim().isEmpty() && User.checkPassword(newValue.trim())) {
+                errorPassword = false;
+                ocultarErrorEnCampo(passwordContainer);
             }
         });
 
@@ -417,7 +447,6 @@ public class RegisterFXMLController implements Initializable {
 
     @FXML
     private void registrarUsuario(ActionEvent event) {
-
         if (!errorUser && !errorEmail && !errorPassword && !errorBirthDate) {
 
             errorRegister.setVisible(false);
@@ -431,10 +460,8 @@ public class RegisterFXMLController implements Initializable {
             if (selectedAvatarFile != null) {
                 String avatarPath = selectedAvatarFile.getAbsolutePath();
                 app.registerUser(nick, email, pass, birthDate, avatarPath);
-
             } else {
                 app.registerUser(nick, email, pass, birthDate, (Image) null);
-
             }
             app.login(nick, pass);
 
@@ -452,14 +479,11 @@ public class RegisterFXMLController implements Initializable {
         } else {
             errorRegister.setVisible(true);
             errorRegister.setManaged(true);
-
         }
-
     }
 
     @FXML
     private void togglePasswordVisibility(ActionEvent event) {
-
         if (passVisible) {
             passTextField.setVisible(false);
             passTextField.setDisable(true);
@@ -486,5 +510,4 @@ public class RegisterFXMLController implements Initializable {
 
         passVisible = !passVisible;
     }
-
 }
