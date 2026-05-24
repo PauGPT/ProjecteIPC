@@ -12,7 +12,7 @@
    <children>
       <HBox alignment="CENTER_LEFT" spacing="20.0">
          <children>
-            <Label style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Historial de Sessions de l'Usuari">
+            <Label style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Historial de Sessions">
                <font>
                   <Font size="18.0" />
                </font>
