@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane fx:id="splitPanePrincipal" dividerPositions="0.6367279585101367" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.0" prefWidth="931.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MapaController">
+<SplitPane fx:id="splitPanePrincipal" dividerPositions="0.6367279585101367" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="582.0" prefWidth="931.0" stylesheets="@../styles/mapa.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MapaController">
   <items>
     <VBox spacing="10.0">
          <children>
@@ -29,14 +29,14 @@
                   <Button fx:id="btnToggleForm" mnemonicParsing="false" onAction="#handleToggleForm" text="+ Afegir Mapa" />
                </children>
             </HBox>
-            <TableView fx:id="mapsTableView" VBox.vgrow="ALWAYS">
+            <TableView id="taulamoderna" fx:id="mapsTableView" styleClass="taulamoderna" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn fx:id="regionCol" minWidth="100.0" prefWidth="-1.0" text="Regió" />
                 <TableColumn fx:id="latMinCol" minWidth="75.0" prefWidth="-1.0" text="Lat. mín" />
                 <TableColumn fx:id="latMaxCol" minWidth="75.0" prefWidth="-1.0" text="Lat. màx" />
                 <TableColumn fx:id="lonMinCol" minWidth="75.0" prefWidth="-1.0" text="Lon. mín" />
                 <TableColumn fx:id="lonMaxCol" minWidth="75.0" prefWidth="-1.0" text="Lon. màx" />
-                <TableColumn fx:id="deleteColumn" maxWidth="50.0" minWidth="40.0" prefWidth="45.0" styleClass="columna-centrada" text="" />
+                <TableColumn id="columna-borrar" fx:id="deleteColumn" maxWidth="50.0" minWidth="40.0" prefWidth="45.0" styleClass="columna-borrar" text="" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -65,7 +65,7 @@
                   <Label style="-fx-text-fill: #34495e;" text="Imatge del mapa (JPG):" />
                   <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Button fx:id="btnBrowse" maxWidth="220.0" mnemonicParsing="false" onAction="#handleSelectImage" prefHeight="35.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Seleccionar imatge..." HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btnBrowse" maxWidth="220.0" mnemonicParsing="false" onAction="#handleSelectImage" prefHeight="35.0" style="-fx-background-color: #2200CC75; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="Seleccionar imatge..." HBox.hgrow="ALWAYS" />
                         <Button fx:id="btnClearImage" managed="false" mnemonicParsing="false" onAction="#handleClearImage" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #d63031; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" text="×" visible="false">
                            <font>
                               <Font size="16.0" />

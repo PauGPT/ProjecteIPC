@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -60,6 +61,7 @@ public class MapaController implements Initializable {
         
         mapas = FXCollections.observableArrayList(app.getMapRegions());
         
+        //IA per al SplitPane
         if (splitPanePrincipal != null) {
             splitPanePrincipal.setDividerPositions(1.0);
         }
@@ -79,7 +81,7 @@ public class MapaController implements Initializable {
     private void handleToggleForm(ActionEvent event) {
         if (formularioVisible) {
             splitPanePrincipal.setDividerPositions(1.0);
-            btnToggleForm.setText("+ Gestionar Mapes");
+            btnToggleForm.setText("+ Afegir Mapa");
             formularioVisible = false;
         } else {
             splitPanePrincipal.setDividerPositions(0.65);
@@ -90,6 +92,7 @@ public class MapaController implements Initializable {
 
     @FXML
     private void handleSelectImage(ActionEvent event) {
+        //IA per al fileChooser
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar Imatge del Mapa");
         fileChooser.getExtensionFilters().addAll(
@@ -111,7 +114,7 @@ public class MapaController implements Initializable {
     private void handleClearImage(ActionEvent event) {
         imagenSeleccionada = null;
         btnBrowse.setText("Seleccionar imatge...");
-        btnBrowse.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnBrowse.setStyle("-fx-background-color: #2200CC75; -fx-text-fill: white; -fx-font-weight: bold;");
         btnClearImage.setVisible(false);
         btnClearImage.setManaged(false);
     }
@@ -142,7 +145,6 @@ public class MapaController implements Initializable {
             if (nuevaRegion != null) {
                 mapas.add(nuevaRegion);
                 limpiarFormulario();
-                handleToggleForm(null);
             } else {
                 mostrarAlerta(AlertType.ERROR, "Error de Sistema", "No s'ha pogut crear la regió del mapa.");
             }
@@ -161,7 +163,7 @@ public class MapaController implements Initializable {
         imagenSeleccionada = null;
         
         btnBrowse.setText("Seleccionar imatge...");
-        btnBrowse.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnBrowse.setStyle("-fx-background-color: #2200CC75; -fx-text-fill: white; -fx-font-weight: bold;");
         btnClearImage.setVisible(false);
         btnClearImage.setManaged(false);
     }
@@ -175,6 +177,7 @@ public class MapaController implements Initializable {
     }
     
     private void configurarColumnaBorrar() {
+        //IA per a la columna del boto de borrar
         Callback<TableColumn<MapRegion, Void>, TableCell<MapRegion, Void>> cellFactory = 
         new Callback<TableColumn<MapRegion, Void>, TableCell<MapRegion, Void>>() {
             @Override
@@ -196,8 +199,17 @@ public class MapaController implements Initializable {
                         
                         btnBorrar.setOnAction(event -> {
                             MapRegion mapa = getTableView().getItems().get(getIndex());
+    
+                            Alert confirmacio = new Alert(AlertType.CONFIRMATION);
+                            confirmacio.setTitle("Confirmar esborrat");
+                            confirmacio.setHeaderText("Vas a eliminar el mapa: " + mapa.getName());
+                            confirmacio.setContentText("Estàs segur? Aquesta acció no es pot desfer.");
+    
+                            Optional resultat = confirmacio.showAndWait();
+    
+                            if (resultat.isPresent() && resultat.get() == javafx.scene.control.ButtonType.OK) {
                             boolean esborrat = app.removeMapRegion(mapa);
-                            
+        
                             if (esborrat) {
                                 mapas.remove(mapa);
                             } else {
@@ -207,7 +219,8 @@ public class MapaController implements Initializable {
                                 alerta.setContentText("És un mapa per defecte o està sent usat per alguna activitat");
                                 alerta.showAndWait();
                             }
-                        });
+                        }
+                    });
                         
                         setAlignment(javafx.geometry.Pos.CENTER);
                     }
