@@ -28,6 +28,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import upv.ipc.sportlib.SportActivityApp;
 import upv.ipc.sportlib.User;
 
@@ -79,6 +80,18 @@ public class UpdateUserFXMLController implements Initializable {
     private StackPane birthContainer;
     @FXML
     private Label userLabel;
+    @FXML
+    private VBox passwordRequirementsBox;
+    @FXML
+    private Label reqLength;
+    @FXML
+    private Label reqUppercase;
+    @FXML
+    private Label reqLowercase;
+    @FXML
+    private Label reqDigit;
+    @FXML
+    private Label reqSymbol;
 
     /**
      * Initializes the controller class.
@@ -87,9 +100,10 @@ public class UpdateUserFXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         passTextField.textProperty().bindBidirectional(passField.textProperty());
+        setupPasswordRequirements();
 
         user = app.getCurrentUser();
-        
+
         if (user.getAvatarPath() != null) {
             selectedAvatarFile = new File(user.getAvatarPath());
             Image image = new Image(selectedAvatarFile.toURI().toString());
@@ -131,52 +145,58 @@ public class UpdateUserFXMLController implements Initializable {
             }
         });
 
-        passField.focusedProperty().addListener((value, oldValue, newValue) -> {
-            if (!newValue) {
-                if (passField.getText().isEmpty()) {
-                    errorPassword = true;
-                    mostrarErrorEnCampo(passwordContainer, "La contrasenya no pot estar buida");
-                } else if (!User.checkPassword(passField.getText())) {
-                    errorPassword = true;
-                    mostrarErrorEnCampo(passwordContainer, "La contrasenya ha de tenir entre 8 i 20 caràcters, amb almenys una majúscula, una minúscula, un dígit i un símbol");
-                } else {
-                    errorPassword = false;
-                    ocultarErrorEnCampo(passwordContainer);
+        TextField dateTextField = birthDatePicker.getEditor();
+
+        dateTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.length() < oldValue.length()) {
+                return;
+            }
+
+            if (newValue.length() > 10) {
+                dateTextField.setText(oldValue);
+                return;
+            }
+
+            String cleaned = newValue.replaceAll("[^0-9/]", "");
+            String digits = cleaned.replaceAll("/", "");
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < digits.length(); i++) {
+                sb.append(digits.charAt(i));
+                if (i == 1 || i == 3) {
+                    sb.append("/");
                 }
             }
-        });
 
-        passTextField.focusedProperty().addListener((value, oldValue, newValue) -> {
-            if (!newValue) {
-                String password = !passTextField.getText().isEmpty() ? passTextField.getText() : passField.getText();
-                password = password.trim();
-
-                if (password.isEmpty()) {
-                    errorPassword = true;
-                    mostrarErrorEnCampo(passwordContainer, "La contrasenya no pot estar buida");
-                } else if (!User.checkPassword(password)) {
-                    errorPassword = true;
-                    mostrarErrorEnCampo(passwordContainer, "La contrasenya ha de tenir entre 8 i 20 caràcters, amb almenys una majúscula, una minúscula, un dígit i un símbol");
-                } else {
-                    errorPassword = false;
-                    ocultarErrorEnCampo(passwordContainer);
-                }
+            if (!newValue.equals(sb.toString())) {
+                dateTextField.setText(sb.toString());
+                dateTextField.positionCaret(sb.length());
             }
         });
 
         birthDatePicker.focusedProperty().addListener((value, oldValue, newValue) -> {
             if (!newValue) {
+                try {
+                    String text = birthDatePicker.getEditor().getText();
+                    if (text != null && !text.isEmpty()) {
+                        birthDatePicker.setValue(birthDatePicker.getConverter().fromString(text));
+                    }
+                } catch (Exception e) {
+                    birthDatePicker.setValue(null);
+                }
+
                 if (birthDatePicker.getValue() == null) {
                     errorBirthDate = true;
                     mostrarErrorEnCampo(birthContainer, "La data de naixement no pot estar buida");
-                } else if (!User.isOlderThan(birthDatePicker.getValue(), 18)) {
+                } else if (!User.isOlderThan(birthDatePicker.getValue(), 12)) {
                     errorBirthDate = true;
-                    mostrarErrorEnCampo(birthContainer, "Has de tindre més de 18 anys per a registrar-te");
+                    mostrarErrorEnCampo(birthContainer, "Has de tindre més de 12 anys per a registrar-te");
                 } else {
                     errorBirthDate = false;
                     ocultarErrorEnCampo(birthContainer);
                 }
             }
+
         });
 
         //Quitar el foco automático inicial de los campos de texto
@@ -295,8 +315,21 @@ public class UpdateUserFXMLController implements Initializable {
             alert.setTitle("Actualització de dades");
             alert.setHeaderText(null);
             alert.setContentText("Les teues dades s'han actualitzat correctament");
+            java.util.Optional<javafx.scene.control.ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == javafx.scene.control.ButtonType.OK) {
 
-            alert.showAndWait();
+                Stage stage = (Stage) registerButton.getScene().getWindow();
+
+                App.getMainController().updateMenuAvatar();
+                App.getMainController().updateToolbarState();
+                App.getMainController().deselectMenuButtons();
+                App.getMainController().loadView(App.Vista.DASHBOARD_LOGGED);
+
+                if (stage != null) {
+                    stage.setMaximized(true);
+                }
+
+            }
 
         } else {
             errorRegister.setVisible(true);
@@ -334,6 +367,99 @@ public class UpdateUserFXMLController implements Initializable {
         }
 
         passVisible = !passVisible;
+    }
+
+    private void setupPasswordRequirements() {
+        passField.focusedProperty().addListener((obs, oldVal, newValue) -> handlePasswordFocus(newValue));
+        passTextField.focusedProperty().addListener((obs, oldVal, newValue) -> handlePasswordFocus(newValue));
+
+        passField.textProperty().addListener((obs, oldVal, newValue) -> {
+            if (passField.isFocused()) {
+                updateRequirements(newValue);
+            }
+        });
+
+        passTextField.textProperty().addListener((obs, oldVal, newValue) -> {
+            if (passTextField.isFocused()) {
+                updateRequirements(newValue);
+            }
+        });
+
+        passField.focusedProperty().addListener((value, oldValue, newValue) -> {
+            if (!newValue) {
+                validatePasswordOnBlur();
+            }
+        });
+
+        passTextField.focusedProperty().addListener((value, oldValue, newValue) -> {
+            if (!newValue) {
+                validatePasswordOnBlur();
+            }
+        });
+    }
+
+    private void handlePasswordFocus(boolean hasFocus) {
+        if (hasFocus || passField.isFocused() || passTextField.isFocused()) {
+            passwordRequirementsBox.setVisible(true);
+            passwordRequirementsBox.setManaged(true);
+            String currentPassword = passField.isFocused() ? passField.getText() : passTextField.getText();
+            updateRequirements(currentPassword);
+        } else {
+            passwordRequirementsBox.setVisible(false);
+            passwordRequirementsBox.setManaged(false);
+        }
+    }
+
+    private void updateRequirements(String password) {
+        if (password == null) {
+            password = "";
+        }
+
+        boolean isLengthValid = password.length() >= 8 && password.length() <= 20;
+        boolean hasUppercase = password.matches(".*[A-Z].*");
+        boolean hasLowercase = password.matches(".*[a-z].*");
+        boolean hasDigit = password.matches(".*\\d.*");
+        boolean hasSymbol = password.matches(".*[^a-zA-Z0-9].*");
+
+        toggleCriterion(reqLength, "8-20 Caràcters", isLengthValid);
+        toggleCriterion(reqUppercase, "Almenys una majúscula", hasUppercase);
+        toggleCriterion(reqLowercase, "Almenys una minúscula", hasLowercase);
+        toggleCriterion(reqDigit, "Almenys un dígit", hasDigit);
+        toggleCriterion(reqSymbol, "Almenys un símbol", hasSymbol);
+    }
+
+    private void toggleCriterion(Label label, String text, boolean isValid) {
+        label.getStyleClass().removeAll("req-valid", "req-invalid");
+        if (isValid) {
+            label.setText("✔ " + text);
+            label.getStyleClass().add("req-valid");
+        } else {
+            label.setText("✘ " + text);
+            label.getStyleClass().add("req-invalid");
+        }
+    }
+
+    private void validatePasswordOnBlur() {
+        if (passField.isFocused() || passTextField.isFocused()) {
+            return;
+        }
+
+        String password = passTextField.isVisible() ? passTextField.getText() : passField.getText();
+        if (password == null) {
+            password = "";
+        }
+        password = password.trim();
+
+        if (password.isEmpty()) {
+            errorPassword = true;
+            mostrarErrorEnCampo(passwordContainer, "La contrasenya no pot estar buida");
+        } else if (!User.checkPassword(password)) {
+            errorPassword = true;
+            mostrarErrorEnCampo(passwordContainer, "La contrasenya no cumpleix els requisits");
+        } else {
+            errorPassword = false;
+            ocultarErrorEnCampo(passwordContainer);
+        }
     }
 
 }

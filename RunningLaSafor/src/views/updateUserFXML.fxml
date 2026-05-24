@@ -14,7 +14,6 @@
 
 <VBox alignment="CENTER" prefHeight="680.0" prefWidth="600.0" styleClass="main" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UpdateUserFXMLController">
     <children>
-        <!-- Bloque contenedor: Fijado estrictamente en 300px de ancho máximo y mínimo -->
         <VBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="300.0" spacing="8.0">
             <children>
                 <Label fx:id="userLabel" styleClass="mainLabel" text="Modifica les teues dades, usuari" wrapText="true">
@@ -42,7 +41,7 @@
                             </StackPane.margin>
                         </ImageView>
                     </children>
-                </StackPane>
+                </StackPane>     
                 <Label text="Contrasenya:">
                     <VBox.margin>
                         <Insets top="10.0" />
@@ -77,6 +76,14 @@
                         </Button> 
                     </children> 
                 </StackPane>
+                 <VBox fx:id="passwordRequirementsBox" managed="false" spacing="8" styleClass="requirements-box" visible="false">
+                    <Label styleClass="req-title" text="La contrasenya ha d'incloure:" />
+                    <Label fx:id="reqLength" styleClass="req-item, req-invalid" text="✘ 8-20 Caràcters" />
+                    <Label fx:id="reqUppercase" styleClass="req-item, req-invalid" text="✘ Almenys una majúscula" />
+                    <Label fx:id="reqLowercase" styleClass="req-item, req-invalid" text="✘ Almenys una minúscula" />
+                    <Label fx:id="reqDigit" styleClass="req-item, req-invalid" text="✘ Almenys un dígit" />
+                    <Label fx:id="reqSymbol" styleClass="req-item, req-invalid" text="✘ Almenys un símbol" />
+                </VBox>
                 <Label text="Data de naixement:">
                     <VBox.margin>
                         <Insets top="10.0" />
@@ -89,12 +96,13 @@
                     <children>
                         <DatePicker fx:id="birthDatePicker" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="300.0" promptText="dd/mm/aaaa" styleClass="datePicker">
                             <padding>
-                                <Insets left="35.0" />
+                                <Insets left="30.0" />
                             </padding>
                         </DatePicker>
+        
                         <ImageView fitHeight="18.0" fitWidth="18.0" mouseTransparent="true" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@../resources/login/free-user-icon-3296-thumb.png" />
+                                <Image url="@../resources/login/cake.png" />
                             </image>
                             <StackPane.margin>
                                 <Insets left="10.0" />

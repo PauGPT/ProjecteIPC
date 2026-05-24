@@ -100,16 +100,16 @@ public class LoginController implements Initializable {
             errorLogin.setManaged(false);
             errorLogin.setVisible(false);
 
-            Stage stage = (Stage) loginButton.getScene().getWindow();
+                Stage stage = (Stage) loginButton.getScene().getWindow();
 
-            App.getMainController().updateMenuAvatar();
-            App.getMainController().updateToolbarState();
-            App.getMainController().deselectMenuButtons();
-            App.getMainController().loadView(App.Vista.DASHBOARD_LOGGED);
-            
-            if (stage != null) {
-                stage.setMaximized(true);
-            }
+                App.getMainController().updateMenuAvatar();
+                App.getMainController().updateToolbarState();
+                App.getMainController().deselectMenuButtons();
+                App.getMainController().loadView(App.Vista.DASHBOARD_LOGGED);
+
+                if (stage != null) {
+                    stage.setMaximized(true);
+                }
         } else {
 
             errorLogin.setManaged(true);
