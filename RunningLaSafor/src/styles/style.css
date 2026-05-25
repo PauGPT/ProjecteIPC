@@ -1,6 +1,19 @@
 /* 
-   style.css - Global Stylesheet for RunningLaSafor
-   Emerald Green Accent Palette with Slate/Zinc Layout
+    style.css - Gran part del CSS feta per IA amb el següent prompt:
+
+    Actua com un dissenyador UX/UI i escriu el fitxer styles.css per a la meua app d'escriptori en JavaFX.
+    Fes un disseny modern i net seguint la regla 60-30-10:
+    60% (Fons principal): Blanc o gris molt clar per al fons
+    30% (Secundari): Negre o gris fosc per a el text 
+    10% (Accent): Verd esportiu (#10B981) exclusiu per a botons i elements seleccionats
+
+    Requisits:
+    Utilitza la sintaxi pròpia de JavaFX (per exemple: -fx-background-color).
+    Dona estil als components clau: .root, .button, .list-view, .list-cell, .text-field, .combo-box, .label i .split-pane.
+    Afig vores arrodonides (6px-8px) i transicions clares per als estats :hover i :pressed dels botons.
+    Utilitza el color roig per a botons destructius com esborrar
+
+   
 */
 
 .root {

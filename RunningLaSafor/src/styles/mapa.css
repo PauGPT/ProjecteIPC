@@ -1,0 +1,72 @@
+/*IA*/
+/* ==========================================================================
+   ESTILS PER A LA TABLEVIEW DE MAPES
+   ========================================================================== */
+
+/* Contenidor general de la taula */
+.taulamoderna {
+    -fx-background-color: transparent;
+    -fx-border-color: #e2e8f0; 
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+/* Barra superior de la capçalera */
+.taulamoderna .column-header-background {
+    -fx-background-color: #f8f9fa; 
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 0 1px 0; 
+}
+
+/* Capçaleres de cada columna */
+.taulamoderna .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 40px; 
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 1px 0 0; 
+}
+
+/* Eliminar la línia de l'última columna */
+.taulamoderna .column-header:last-visible {
+    -fx-border-width: 0;
+}
+
+/* Celles de dades */
+.taulamoderna .table-cell {
+    -fx-padding: 10px;
+    -fx-border-color: #f1f5f9; 
+    -fx-border-width: 0 0 1px 0;
+}
+
+/* Efecte Hover al passar el ratolí */
+.taulamoderna .table-row-cell:hover {
+    -fx-background-color: #f8fafc; 
+}
+
+/* Fons de la fila seleccionada */
+.taulamoderna .table-row-cell:selected {
+    -fx-background-color: #e2e8f0;
+}
+
+/* Busquem les cel·les de dades d'eixa columna en concret i les fem transparents */
+#taulamoderna .columna-borrar {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-box-type: transparent !important;
+}
+
+/* També hem de fer transparent la capçalera buida d'eixa columna */
+#taulamoderna .columna-borrar .label {
+    -fx-text-fill: transparent;
+}
+
+/* Estil net per a traure el quadrat gris del botó de la paperera */
+.boto-paperera-net {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+}
+.boto-paperera-net:hover {
+    -fx-opacity: 0.6;
+}

@@ -1,7 +1,62 @@
-/*
- * Empty Stylesheet file.
- */
+/*IA*/
+/* 1. Contenidor general de la taula (vores suaus i arredonides) */
+.taula-moderna {
+    -fx-background-color: transparent;
+    -fx-border-color: #e2e8f0; 
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
 
-.mainFxmlClass {
+/* 2. Barra superior de la capçalera (fons gris molt clar) */
+.taula-moderna .column-header-background {
+    -fx-background-color: #f8f9fa; 
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 0 1px 0; 
+}
 
+/* 3. Capçaleres de cada columna individual */
+.taula-moderna .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 40px; 
+    -fx-border-color: #e2e8f0;
+    -fx-border-width: 0 1px 0 0; 
+}
+
+/* Eliminar la línia divisòria de l'última columna */
+.taula-moderna .column-header:last-visible {
+    -fx-border-width: 0;
+}
+
+/* 4. Cel·les de dades (el text es manté el de per defecte) */
+.taula-moderna .table-cell {
+    -fx-padding: 10px;
+    -fx-border-color: #f1f5f9; /* Línia horitzontal fina entre files */
+    -fx-border-width: 0 0 1px 0;
+}
+
+/* Fons de la fila quan passem el ratolí per damunt (efecte Hover) */
+.taula-moderna .table-row-cell:hover {
+    -fx-background-color: #f8fafc; 
+}
+
+/* Fons de la fila quan està seleccionada per l'usuari */
+.taula-moderna .table-row-cell:selected {
+    -fx-background-color: #e2e8f0;
+}
+
+/* ==========================================================================
+   SOLUCIÓ PER A LA COLUMNA DE BORRAR INVISIBLE (.columna-borrar)
+   ========================================================================== */
+
+/* Força a què les cel·les d'aquesta columna siguen completament transparents */
+.taula-moderna .columna-borrar {
+    -fx-background-color: transparent !important;
+    -fx-border-color: transparent !important;
+    -fx-box-type: transparent !important;
+}
+
+/* Amaga el text de la capçalera si escrius alguna cosa en la columna de borrar */
+.taula-moderna .columna-borrar .label {
+    -fx-text-fill: transparent;
 }

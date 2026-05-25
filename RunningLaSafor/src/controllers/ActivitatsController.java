@@ -155,6 +155,8 @@ public class ActivitatsController implements Initializable {
         elevationChart.setCreateSymbols(false);
         elevationChart.setAnimated(false);
 
+        
+        // Codi generat per IA =================================================================================
         // Add zoom support to the map
         mapPane.getTransforms().add(mapScale);
         
@@ -618,6 +620,34 @@ public class ActivitatsController implements Initializable {
         mapPane.getChildren().add(highlightMarker);
         
         drawAnnotations(activity);
+
+        // Enfocar el mapa al punt d'inici de la ruta
+        javafx.application.Platform.runLater(() -> {
+            double viewportWidth = mapScrollPane.getViewportBounds().getWidth();
+            double viewportHeight = mapScrollPane.getViewportBounds().getHeight();
+            
+            if (viewportWidth <= 0) viewportWidth = mapScrollPane.getWidth();
+            if (viewportHeight <= 0) viewportHeight = mapScrollPane.getHeight();
+            if (viewportWidth <= 0) viewportWidth = 500;
+            if (viewportHeight <= 0) viewportHeight = 350;
+            
+            double hMax = width - viewportWidth;
+            double vMax = height - viewportHeight;
+            
+            if (hMax > 0) {
+                double hVal = (startProj.getX() - (viewportWidth / 2.0)) / hMax;
+                mapScrollPane.setHvalue(Math.max(0.0, Math.min(1.0, hVal)));
+            } else {
+                mapScrollPane.setHvalue(0.5);
+            }
+            
+            if (vMax > 0) {
+                double vVal = (startProj.getY() - (viewportHeight / 2.0)) / vMax;
+                mapScrollPane.setVvalue(Math.max(0.0, Math.min(1.0, vVal)));
+            } else {
+                mapScrollPane.setVvalue(0.5);
+            }
+        });
     }
 
     private void drawElevationChart(Activity activity) {

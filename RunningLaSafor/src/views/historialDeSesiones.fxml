@@ -8,18 +8,18 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="900.0" spacing="15.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.historialDeSesiones">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="900.0" spacing="15.0" stylesheets="@../styles/historialDeSesiones.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.historialDeSesiones">
    <children>
       <HBox alignment="CENTER_LEFT" spacing="20.0">
          <children>
-            <Label style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Historial de Sessions de l'Usuari">
+            <Label style="-fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Historial de Sessions">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
          </children>
       </HBox>
-      <TableView fx:id="sesionesTableView" VBox.vgrow="ALWAYS">
+      <TableView fx:id="sesionesTableView" styleClass="taula-moderna" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn fx:id="fechaInicioCol" minWidth="140.0" prefWidth="-1.0" styleClass="columna-centrada" text="Inici" />
           <TableColumn fx:id="fechaFinCol" minWidth="140.0" prefWidth="-1.0" styleClass="columna-centrada" text="Fi" />

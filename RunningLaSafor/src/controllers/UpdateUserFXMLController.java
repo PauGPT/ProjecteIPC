@@ -8,6 +8,7 @@ import application.App;
 import java.io.File;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -29,14 +30,10 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import upv.ipc.sportlib.SportActivityApp;
 import upv.ipc.sportlib.User;
 
-/**
- * FXML Controller class
- *
- * @author ultraMEga
- */
 public class UpdateUserFXMLController implements Initializable {
 
     private File selectedAvatarFile = null;
@@ -93,9 +90,6 @@ public class UpdateUserFXMLController implements Initializable {
     @FXML
     private Label reqSymbol;
 
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -111,37 +105,60 @@ public class UpdateUserFXMLController implements Initializable {
             avatarPlaceholder.setVisible(false);
             btnRemoveAvatar.setVisible(true);
             btnRemoveAvatar.setManaged(true);
-
         }
 
         birthDatePicker.setValue(user.getBirthDate());
-
         emailField.setText(user.getEmail());
-
         userLabel.setText("Modifica les teues dades, " + user.getNickName());
 
-        // en contra de mi voluntad
         passField.setText(user.getPassword());
         passTextField.setText(user.getPassword());
 
         emailField.focusedProperty().addListener((value, oldValue, newValue) -> {
             if (!newValue) {
-
                 if (emailField.getText().isEmpty()) {
                     errorEmail = true;
                     mostrarErrorEnCampo(emailContainer, "El mail no pot estar buit.");
                 } else if (!User.checkEmail(emailField.getText())) {
                     errorEmail = true;
                     mostrarErrorEnCampo(emailContainer, "El format ha de ser usuari@domini");
-
-                } else if (false) {
-                    errorEmail = true;
-                    mostrarErrorEnCampo(emailContainer, "El mail ja existeix");
-
                 } else {
                     errorEmail = false;
                     ocultarErrorEnCampo(emailContainer);
                 }
+            }
+        });
+
+        emailField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (errorEmail) {
+                if (!newValue.isEmpty() && User.checkEmail(newValue)) {
+                    errorEmail = false;
+                    ocultarErrorEnCampo(emailContainer);
+                }
+            }
+        });
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        birthDatePicker.setConverter(new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                if (date != null) {
+                    return formatter.format(date);
+                }
+                return "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.trim().isEmpty()) {
+                    try {
+                        return LocalDate.parse(string, formatter);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }
+                return null;
             }
         });
 
@@ -172,6 +189,24 @@ public class UpdateUserFXMLController implements Initializable {
                 dateTextField.setText(sb.toString());
                 dateTextField.positionCaret(sb.length());
             }
+
+            if (errorBirthDate && sb.length() == 10) {
+                try {
+                    LocalDate date = LocalDate.parse(sb.toString(), formatter);
+                    if (User.isOlderThan(date, 12)) {
+                        errorBirthDate = false;
+                        ocultarErrorEnCampo(birthContainer);
+                    }
+                } catch (Exception e) {
+                }
+            }
+        });
+
+        birthDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (errorBirthDate && newVal != null && User.isOlderThan(newVal, 12)) {
+                errorBirthDate = false;
+                ocultarErrorEnCampo(birthContainer);
+            }
         });
 
         birthDatePicker.focusedProperty().addListener((value, oldValue, newValue) -> {
@@ -196,10 +231,8 @@ public class UpdateUserFXMLController implements Initializable {
                     ocultarErrorEnCampo(birthContainer);
                 }
             }
-
         });
 
-        //Quitar el foco automático inicial de los campos de texto
         Platform.runLater(() -> {
             if (emailField.getScene() != null) {
                 emailField.getScene().getRoot().requestFocus();
@@ -227,13 +260,11 @@ public class UpdateUserFXMLController implements Initializable {
             avatarPlaceholder.setVisible(false);
             btnRemoveAvatar.setVisible(true);
             btnRemoveAvatar.setManaged(true);
-
         }
     }
 
     @FXML
     private void resetAvatar(ActionEvent event) {
-
         selectedAvatarFile = null;
         avatarCircle.setFill(Color.web("#fff4f4"));
 
@@ -290,8 +321,7 @@ public class UpdateUserFXMLController implements Initializable {
 
     @FXML
     private void actualizarUsuario(ActionEvent event) {
-
-        if (!errorEmail && !errorEmail && !errorBirthDate) {
+        if (!errorEmail && !errorPassword && !errorBirthDate) {
 
             errorRegister.setVisible(false);
             errorRegister.setManaged(false);
@@ -303,10 +333,8 @@ public class UpdateUserFXMLController implements Initializable {
             if (selectedAvatarFile != null) {
                 String avatarPath = selectedAvatarFile.getAbsolutePath();
                 app.updateCurrentUser(email, pass, birthDate, avatarPath);
-
             } else {
                 app.updateCurrentUser(email, pass, birthDate, (Image) null);
-
             }
 
             App.getMainController().updateMenuAvatar();
@@ -315,9 +343,10 @@ public class UpdateUserFXMLController implements Initializable {
             alert.setTitle("Actualització de dades");
             alert.setHeaderText(null);
             alert.setContentText("Les teues dades s'han actualitzat correctament");
+            
             java.util.Optional<javafx.scene.control.ButtonType> result = alert.showAndWait();
+            
             if (result.isPresent() && result.get() == javafx.scene.control.ButtonType.OK) {
-
                 Stage stage = (Stage) registerButton.getScene().getWindow();
 
                 App.getMainController().updateMenuAvatar();
@@ -328,20 +357,16 @@ public class UpdateUserFXMLController implements Initializable {
                 if (stage != null) {
                     stage.setMaximized(true);
                 }
-
             }
 
         } else {
             errorRegister.setVisible(true);
             errorRegister.setManaged(true);
-
         }
-
     }
 
     @FXML
     private void togglePasswordVisibility(ActionEvent event) {
-
         if (passVisible) {
             passTextField.setVisible(false);
             passTextField.setDisable(true);
@@ -377,11 +402,19 @@ public class UpdateUserFXMLController implements Initializable {
             if (passField.isFocused()) {
                 updateRequirements(newValue);
             }
+            if (errorPassword && !newValue.trim().isEmpty() && User.checkPassword(newValue.trim())) {
+                errorPassword = false;
+                ocultarErrorEnCampo(passwordContainer);
+            }
         });
 
         passTextField.textProperty().addListener((obs, oldVal, newValue) -> {
             if (passTextField.isFocused()) {
                 updateRequirements(newValue);
+            }
+            if (errorPassword && !newValue.trim().isEmpty() && User.checkPassword(newValue.trim())) {
+                errorPassword = false;
+                ocultarErrorEnCampo(passwordContainer);
             }
         });
 

@@ -49,13 +49,10 @@ public class historialDeSesiones implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         app = SportActivityApp.getInstance();
         
-        if (app.getCurrentUser() != null) {
-            sesiones = FXCollections.observableArrayList(app.getSessionsByUser(app.getCurrentUser()));
-        } else {
-            sesiones = FXCollections.observableArrayList();
-        }
+        sesiones = FXCollections.observableArrayList(app.getSessionsByUser(app.getCurrentUser()));
         sesionesTableView.setItems(sesiones);
         
+        //IA per al format de les dates
         DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         
         fechaInicioCol.setCellValueFactory(celda -> {
