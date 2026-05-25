@@ -21,6 +21,8 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.ImagePattern;
@@ -60,6 +62,8 @@ public class MainController implements Initializable {
     @FXML
     private Button logoButton;
     @FXML
+    private Button helpButton;
+    @FXML
     private BorderPane contentPane;
     @FXML
     private HBox toolbar;
@@ -87,6 +91,21 @@ public class MainController implements Initializable {
                 }
             });
         }
+
+        // Registrar tecla d'ajuda F1 a nivell d'escena quan estiga disponible
+        toolbar.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                newScene.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+                    if (event.getCode() == KeyCode.F1) {
+                        // Només obri l'ajuda si l'usuari està identificat i la barra està activa
+                        if (SportActivityApp.getInstance().getCurrentUser() != null) {
+                            showHelpDialog();
+                            event.consume();
+                        }
+                    }
+                });
+            }
+        });
     }    
 
 
@@ -201,6 +220,22 @@ public class MainController implements Initializable {
         } else {
             loadView("/views/DashboardUnlogged.fxml");
         }
+    }
+
+    @FXML
+    private void handleHelp(ActionEvent event) {
+        showHelpDialog();
+    }
+
+    private void showHelpDialog() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Ajuda");
+        alert.setHeaderText("Vols pujar la teua primera activitat?");
+        alert.setContentText("Comprova en la secció \"Mapes\" que hi ha un mapa per a la teua activitat o puja'n un.\nDesprés afegeix el fitxer .gpx a la secció \"Activitats\".\nRecorda que fent click al botó del logo pots veure l'acumulat del mes.");
+        if (toolbar != null && toolbar.getScene() != null) {
+            alert.initOwner(toolbar.getScene().getWindow());
+        }
+        alert.showAndWait();
     }
 
     public void deselectMenuButtons() {

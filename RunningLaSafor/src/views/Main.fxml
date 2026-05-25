@@ -75,6 +75,11 @@
                </cursor>
             </ToggleButton>
             <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+            <Button fx:id="helpButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleHelp" styleClass="help-button" text="?">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
             <MenuButton maxHeight="1.7976931348623157E308" mnemonicParsing="false">
               <items>
                 <MenuItem fx:id="modificarPerfilButton" mnemonicParsing="false" onAction="#handleModificarPerfil" text="Modificar perfil" />

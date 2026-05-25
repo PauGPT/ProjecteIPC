@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import upv.ipc.sportlib.Activity;
@@ -40,6 +41,10 @@ public class DashboardLoggedController implements Initializable {
     private Label lblElevationGain;
     @FXML
     private Label lblElevationLoss;
+    @FXML
+    private Region left_region;
+    @FXML
+    private Region right_region;
 
     /**
      * Initializes the controller class.

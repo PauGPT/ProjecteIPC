@@ -282,4 +282,28 @@
     -fx-alignment: CENTER;
 }
 
+/* Help Button in toolbar */
+.help-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-text-fill: -text-secondary;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 20 0 20;
+    -fx-cursor: hand;
+    -fx-effect: none;
+}
+
+.help-button:hover {
+    -fx-background-color: #e2e8f0;
+    -fx-text-fill: -text-primary;
+    -fx-effect: none;
+}
+
+.help-button:pressed {
+    -fx-background-color: #cbd5e1;
+    -fx-effect: none;
+}
+
 

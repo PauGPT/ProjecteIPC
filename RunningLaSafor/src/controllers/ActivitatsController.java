@@ -2,6 +2,9 @@ package controllers;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -39,6 +42,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Scale;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.ZoomEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import upv.ipc.sportlib.Activity;
@@ -46,10 +50,19 @@ import upv.ipc.sportlib.MapProjection;
 import upv.ipc.sportlib.MapRegion;
 import upv.ipc.sportlib.SportActivityApp;
 import upv.ipc.sportlib.TrackPoint;
+import upv.ipc.sportlib.Annotation;
+import upv.ipc.sportlib.AnnotationType;
+import upv.ipc.sportlib.GeoPoint;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Slider;
+import javafx.scene.text.Text;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseButton;
+import javafx.scene.Cursor;
 
-/**
- * FXML Controller class for Activitats
- */
+
 public class ActivitatsController implements Initializable {
 
     @FXML
@@ -61,7 +74,7 @@ public class ActivitatsController implements Initializable {
     @FXML
     private Button btnDeleteActivity;
 
-    // Detail view FXML elements
+    
     @FXML
     private Label activityNameLabel;
     @FXML
@@ -95,6 +108,15 @@ public class ActivitatsController implements Initializable {
     private Circle highlightMarker;
     private Circle chartHighlightMarker;
     private Line chartHighlightLine;
+    @FXML
+    private VBox detailVBox;
+
+    //Variable auxiliars per a les anotacions
+    private boolean waitingForSecondPoint = false;
+    private AnnotationType pendingType;
+    private GeoPoint pendingFirstPoint;
+    private ContextMenu activeContextMenu;
+    private Node previewShape;
 
 
 
@@ -102,7 +124,7 @@ public class ActivitatsController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         app = SportActivityApp.getInstance();
         
-        // Define Custom CellFactory to show activity name
+        //CellFactory per a la llista d'activitats
         activitiesListView.setCellFactory(listView -> new ListCell<Activity>() {
             @Override
             protected void updateItem(Activity activity, boolean empty) {
@@ -116,19 +138,20 @@ public class ActivitatsController implements Initializable {
             }
         });
 
-        // Set listener for selection changes
-        activitiesListView.getSelectionModel().selectedItemProperty().addListener((obsVal, oldActivity, newActivity) -> {
-            if (newActivity != null) {
-                showActivityDetails(newActivity);
+        //Listener per a la selecció d'activitats
+        activitiesListView.getSelectionModel().selectedItemProperty().addListener((obs, oV, nV) -> {
+            if (nV != null) {
+                incrementViewedActivities();
+                showActivityDetails(nV);
             } else {
                 clearActivityDetails();
             }
         });
 
-        // Populate the ListView with the current user's activities if they are logged in
+        
         refreshActivities();
         
-        // Disable symbols/dots and animations on the elevation chart to avoid JavaFX bugs
+        //Llevar boletes del perfil de desnivell
         elevationChart.setCreateSymbols(false);
         elevationChart.setAnimated(false);
 
@@ -282,7 +305,79 @@ public class ActivitatsController implements Initializable {
                 chartHighlightLine.setVisible(false);
             }
         });
+
+        // Click handler on mapPane for creating annotations
+        mapPane.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                if (waitingForSecondPoint) {
+                    waitingForSecondPoint = false;
+                    mapPane.setCursor(Cursor.DEFAULT);
+                    cleanupPreviewShape();
+                    return;
+                }
+                Activity selected = activitiesListView.getSelectionModel().getSelectedItem();
+                if (selected == null || currentProjection == null) {
+                    return;
+                }
+                showMapContextMenu(event.getX(), event.getY(), event.getScreenX(), event.getScreenY());
+                event.consume();
+            } else if (event.getButton() == MouseButton.PRIMARY) {
+                if (activeContextMenu != null && activeContextMenu.isShowing()) {
+                    activeContextMenu.hide();
+                }
+                if (waitingForSecondPoint) {
+                    handleSecondPointClicked(event.getX(), event.getY());
+                    event.consume();
+                }
+            }
+        });
+
+        // Mouse moved handler on mapPane for rendering live line/circle previews
+        mapPane.setOnMouseMoved(event -> {
+            if (waitingForSecondPoint && pendingFirstPoint != null && currentProjection != null) {
+                double mouseX = event.getX();
+                double mouseY = event.getY();
+                
+                javafx.geometry.Point2D p1 = currentProjection.project(pendingFirstPoint);
+                
+                cleanupPreviewShape();
+                
+                if (pendingType == AnnotationType.LINE) {
+                    Line tempLine = new Line(p1.getX(), p1.getY(), mouseX, mouseY);
+                    tempLine.setStroke(Color.web("#E74C3C"));
+                    tempLine.setStrokeWidth(2.0);
+                    tempLine.getStrokeDashArray().addAll(5.0, 5.0);
+                    tempLine.setMouseTransparent(true);
+                    previewShape = tempLine;
+                    mapPane.getChildren().add(previewShape);
+                } else if (pendingType == AnnotationType.CIRCLE) {
+                    double radius = Math.hypot(mouseX - p1.getX(), mouseY - p1.getY());
+                    Circle tempCircle = new Circle(p1.getX(), p1.getY(), radius, Color.TRANSPARENT);
+                    tempCircle.setStroke(Color.web("#E74C3C"));
+                    tempCircle.setStrokeWidth(2.0);
+                    tempCircle.getStrokeDashArray().addAll(5.0, 5.0);
+                    tempCircle.setMouseTransparent(true);
+                    previewShape = tempCircle;
+                    mapPane.getChildren().add(previewShape);
+                }
+            }
+        });
+
+        // Inicialització de la vista sense cap activitat seleccionada
+        clearActivityDetails();
     }    
+
+    private void incrementViewedActivities() {
+        try {
+            SportActivityApp appInstance = SportActivityApp.getInstance();
+            java.lang.reflect.Field field = appInstance.getClass().getDeclaredField("viewedActivitiesCount");
+            field.setAccessible(true);
+            int currentCount = (int) field.get(appInstance);
+            field.set(appInstance, currentCount + 1);
+        } catch (Exception e) {
+            System.err.println("Error incrementing viewed activities counter: " + e.getMessage());
+        }
+    }
 
     private void refreshActivities() {
         if (app.getCurrentUser() != null) {
@@ -292,11 +387,14 @@ public class ActivitatsController implements Initializable {
 
     private void clearActivityDetails() {
         activityNameLabel.setText("Selecciona una activitat");
-        lblDistance.setText("0.0 km");
+        /*lblDistance.setText("0.0 km");
         lblDuration.setText("00:00:00");
         lblPace.setText("0:00 /km");
         lblElevationGain.setText("+0 m");
         lblElevationLoss.setText("-0 m");
+        */
+        
+        showItems(false);
         
         mapImageView.setImage(null);
         mapPane.getChildren().removeIf(node -> node != mapImageView);
@@ -312,28 +410,48 @@ public class ActivitatsController implements Initializable {
         mapScale.setX(1.0);
         mapScale.setY(1.0);
         btnDeleteActivity.setDisable(true);
+        waitingForSecondPoint = false;
+        mapPane.setCursor(Cursor.DEFAULT);
+        cleanupPreviewShape();
+        if (activeContextMenu != null && activeContextMenu.isShowing()) {
+            activeContextMenu.hide();
+        }
+    }
+    
+    // Modifica la visibilitat dels elements del detailVBox excepte la etiqueta amb el nom/títol
+    private void showItems(boolean show) {
+        detailVBox.setVisible(true);
+        for (int i = 1; i < detailVBox.getChildren().size(); i++) {
+            Node child = detailVBox.getChildren().get(i);
+            child.setVisible(show);
+            child.setManaged(show);
+        }
     }
 
     private void showActivityDetails(Activity activity) {
+        if (activeContextMenu != null && activeContextMenu.isShowing()) {
+            activeContextMenu.hide();
+        }
         btnDeleteActivity.setDisable(false);
+        showItems(true);
         mapScale.setX(1.0);
         mapScale.setY(1.0);
-        // 1. Title/Name
+        //Nom de l'activitat
         activityNameLabel.setText(activity.getName());
 
-        // 2. Statistics
-        // Distance in km
+        //Estadístiques de l'activitat
+        //Distancia en km
         double distanceKm = activity.getTotalDistance() / 1000.0;
         lblDistance.setText(String.format(java.util.Locale.getDefault(), "%.2f km", distanceKm));
 
-        // Duration formatted as hh:mm:ss
+        //Duració en hh:mm:ss
         long totalSeconds = activity.getDuration().getSeconds();
         long hours = totalSeconds / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;
         lblDuration.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
 
-        // Average Pace formatted as mm:ss /km
+        //Imprimir velocitat
         double paceRaw = activity.getAveragePace();
         int paceMinutes = (int) paceRaw;
         int paceSeconds = (int) Math.round((paceRaw - paceMinutes) * 60);
@@ -343,11 +461,11 @@ public class ActivitatsController implements Initializable {
         }
         lblPace.setText(String.format("%d:%02d /km", paceMinutes, paceSeconds));
 
-        // Elevation Gain and Loss
+        //Imprimir desnivell
         lblElevationGain.setText(String.format(java.util.Locale.getDefault(), "+%.0f m", activity.getElevationGain()));
         lblElevationLoss.setText(String.format(java.util.Locale.getDefault(), "-%.0f m", activity.getElevationLoss()));
 
-        // 3. Map and Route Track Drawing
+        // Posar el mapa i la ruta sobre ell
         MapRegion region = activity.getSuggestedMap();
         if (region == null) {
             region = app.findMapForActivity(activity);
@@ -373,27 +491,29 @@ public class ActivitatsController implements Initializable {
             mapPane.getChildren().removeIf(node -> node != mapImageView);
         }
 
-        // 4. Elevation Profile Chart
+        //Dibuixar perfil de desnivell
         drawElevationChart(activity);
     }
 
     private void drawRouteOnMap(Activity activity, MapRegion region, double width, double height) {
-        // Clear all previous children from mapPane except mapImageView itself
+        //Borrar tots els punts excepte el imageview
         mapPane.getChildren().removeIf(node -> node != mapImageView);
-
-        java.util.List<TrackPoint> points = activity.getTrackPoints();
-        if (points == null || points.size() < 2) {
-            return;
-        }
+        
+        //Llista amb tots els punts del .gpx
+        List<TrackPoint> points = activity.getTrackPoints();
+        
+        if (points == null || points.size() < 2) return; //ruta amb 0/1 punts
 
         currentProjection = new MapProjection(region, width, height);
-
-        // Find min and max speeds
+        
+        //Forma anterior de buscar velocitat màxima i mínima
+        
         int numPoints = points.size();
-        double minSpeed = Double.MAX_VALUE;
-        double maxSpeed = -Double.MAX_VALUE;
+//        double minSpeed = Double.MAX_VALUE;
+//        double maxSpeed = -Double.MAX_VALUE;
         double[] speeds = new double[numPoints - 1];
-
+        List<Double> validSpeeds = new ArrayList<>();
+        
         for (int i = 0; i < numPoints - 1; i++) {
             TrackPoint current = points.get(i);
             TrackPoint next = points.get(i + 1);
@@ -402,18 +522,36 @@ public class ActivitatsController implements Initializable {
             if (Double.isNaN(speed) || Double.isInfinite(speed)) {
                 speed = 0.0;
             }
-            speeds[i] = speed;
+            
+            /*
             if (speed < minSpeed) {
                 minSpeed = speed;
             }
             if (speed > maxSpeed) {
                 maxSpeed = speed;
             }
+            */
+            
+            speeds[i] = speed;
+            validSpeeds.add(speed);
+            
         }
+        
+        Collections.sort(validSpeeds);
+        
+        //Calcular percentils 5 i 95 per a ignorar valors anòmals de velocitat
+        int p5index = (int) Math.round((validSpeeds.size() * 0.05));
+        int p95index = (int) Math.round((validSpeeds.size() * 0.95));
+        //Per si de cas
+        if (p95index >= validSpeeds.size()) p95index = validSpeeds.size() - 1;
+        
+        
+        double minSpeed = validSpeeds.get(p5index);
+        double maxSpeed = validSpeeds.get(p95index);
 
         double speedRange = maxSpeed - minSpeed;
 
-        java.util.List<javafx.scene.Node> segments = new java.util.ArrayList<>();
+        List<Node> segments = new java.util.ArrayList<>();
 
         // Draw track segments colored by speed
         for (int i = 0; i < numPoints - 1; i++) {
@@ -429,14 +567,17 @@ public class ActivitatsController implements Initializable {
             }
             factor = Math.max(0.0, Math.min(1.0, factor));
             
-            // Classify color into 3 discrete zones: Green (slow), Orange (medium), Red (fast)
+            //Canviar el color segons la velocitat
+            
+            Color colorLent = Color.color(0.18, 0.8, 0.44);    // Verd
+            Color colorMig = Color.color(0.95, 0.75, 0.07);    // Taronja
+            Color colorRapid = Color.color(0.9, 0.22, 0.13);   // Roig
+            
             Color color;
-            if (factor < 1.0 / 3.0) {
-                color = Color.color(0.18, 0.8, 0.44); // Green
-            } else if (factor < 2.0 / 3.0) {
-                color = Color.color(0.95, 0.6, 0.07); // Orange
+            if (factor < 0.5) {
+                color = colorLent.interpolate(colorMig, factor * 2.0);
             } else {
-                color = Color.color(0.9, 0.22, 0.13); // Red
+                color = colorMig.interpolate(colorRapid, (factor - 0.5) * 2.0);
             }
             
             Line segment = new Line(p1.getX(), p1.getY(), p2.getX(), p2.getY());
@@ -475,6 +616,8 @@ public class ActivitatsController implements Initializable {
         }
         highlightMarker.setVisible(false);
         mapPane.getChildren().add(highlightMarker);
+        
+        drawAnnotations(activity);
     }
 
     private void drawElevationChart(Activity activity) {
@@ -554,7 +697,6 @@ public class ActivitatsController implements Initializable {
             stmt.setLong(2, activityId);
             stmt.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -728,7 +870,6 @@ public class ActivitatsController implements Initializable {
                         errAlert.showAndWait();
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
                     Alert errAlert = new Alert(Alert.AlertType.ERROR);
                     errAlert.setTitle("Error");
                     errAlert.setHeaderText("S'ha produït una excepció");
@@ -737,6 +878,270 @@ public class ActivitatsController implements Initializable {
                 }
             }
         }
+    }
+
+    private void showMapContextMenu(double clickX, double clickY, double screenX, double screenY) {
+        if (activeContextMenu != null && activeContextMenu.isShowing()) {
+            activeContextMenu.hide();
+        }
+        
+        ContextMenu contextMenu = new ContextMenu();
+        activeContextMenu = contextMenu;
+        
+        MenuItem itemPoint = new MenuItem("Afegir Punt");
+        MenuItem itemText = new MenuItem("Afegir Text");
+        MenuItem itemLine = new MenuItem("Afegir Línia");
+        MenuItem itemCircle = new MenuItem("Afegir Cercle");
+        
+        GeoPoint gp1 = currentProjection.unproject(clickX, clickY);
+        
+        itemPoint.setOnAction(e -> showAnnotationDialogAndCreate(gp1, null, AnnotationType.POINT));
+        itemText.setOnAction(e -> showAnnotationDialogAndCreate(gp1, null, AnnotationType.TEXT));
+        
+        itemLine.setOnAction(e -> {
+            pendingFirstPoint = gp1;
+            pendingType = AnnotationType.LINE;
+            waitingForSecondPoint = true;
+            mapPane.setCursor(Cursor.CROSSHAIR);
+        });
+        
+        itemCircle.setOnAction(e -> {
+            pendingFirstPoint = gp1;
+            pendingType = AnnotationType.CIRCLE;
+            waitingForSecondPoint = true;
+            mapPane.setCursor(Cursor.CROSSHAIR);
+        });
+        
+        contextMenu.getItems().addAll(itemPoint, itemText, itemLine, itemCircle);
+        contextMenu.show(mapPane, screenX, screenY);
+    }
+
+    private void handleSecondPointClicked(double clickX, double clickY) {
+        waitingForSecondPoint = false;
+        mapPane.setCursor(Cursor.DEFAULT);
+        cleanupPreviewShape();
+        
+        if (currentProjection == null || pendingFirstPoint == null || pendingType == null) {
+            return;
+        }
+        
+        GeoPoint gp2 = currentProjection.unproject(clickX, clickY);
+        showAnnotationDialogAndCreate(pendingFirstPoint, gp2, pendingType);
+        
+        pendingFirstPoint = null;
+        pendingType = null;
+    }
+
+    private void cleanupPreviewShape() {
+        if (previewShape != null) {
+            mapPane.getChildren().remove(previewShape);
+            previewShape = null;
+        }
+    }
+
+    private void showAnnotationDialogAndCreate(GeoPoint gp1, GeoPoint gp2, AnnotationType type) {
+        Activity selected = activitiesListView.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+        
+        Dialog<Annotation> dialog = new Dialog<>();
+        dialog.setTitle("Nova anotació");
+        dialog.setHeaderText("Introdueix els detalls de l'anotació");
+        dialog.initOwner(mapPane.getScene().getWindow());
+        
+        ButtonType createButtonType = new ButtonType("Crear", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
+        
+        TextField txtText = new TextField();
+        txtText.setPromptText("Text de l'anotació");
+        txtText.setPrefWidth(200);
+        
+        ColorPicker colorPicker = new ColorPicker(Color.web("#E74C3C"));
+        
+        Slider sliderWidth = new Slider(1.0, 10.0, 2.0);
+        sliderWidth.setShowTickMarks(true);
+        sliderWidth.setShowTickLabels(true);
+        sliderWidth.setMajorTickUnit(2.0);
+        sliderWidth.setMinorTickCount(1);
+        sliderWidth.setSnapToTicks(true);
+        
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        
+        int row = 0;
+        if (type == AnnotationType.TEXT) {
+            grid.add(new Label("Text:"), 0, row);
+            grid.add(txtText, 1, row);
+            row++;
+        }
+        
+        grid.add(new Label("Color:"), 0, row);
+        grid.add(colorPicker, 1, row);
+        row++;
+        
+        if (type != AnnotationType.TEXT) {
+            grid.add(new Label("Grossor del traç (px):"), 0, row);
+            grid.add(sliderWidth, 1, row);
+            row++;
+        }
+        
+        dialog.getDialogPane().setContent(grid);
+        
+        if (type == AnnotationType.TEXT) {
+            javafx.application.Platform.runLater(txtText::requestFocus);
+        }
+        
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == createButtonType) {
+                String text = (type == AnnotationType.TEXT) ? txtText.getText().trim() : "";
+                Color c = colorPicker.getValue();
+                String colorHex = String.format("#%02X%02X%02X",
+                    (int) (c.getRed() * 255),
+                    (int) (c.getGreen() * 255),
+                    (int) (c.getBlue() * 255)
+                );
+                double strokeWidth = sliderWidth.getValue();
+                
+                List<GeoPoint> points;
+                if (gp2 == null) {
+                    points = List.of(gp1);
+                } else {
+                    points = List.of(gp1, gp2);
+                }
+                
+                return new Annotation(type, text, colorHex, strokeWidth, points);
+            }
+            return null;
+        });
+        
+        Optional<Annotation> result = dialog.showAndWait();
+        result.ifPresent(ann -> {
+            Annotation saved = app.addAnnotation(selected, ann);
+            if (saved != null) {
+                showActivityDetails(selected);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("No s'ha pogut guardar l'anotació");
+                alert.setContentText("Hi ha hagut un error en guardar l'anotació a la base de dades.");
+                alert.showAndWait();
+            }
+        });
+    }
+
+    private void drawAnnotations(Activity activity) {
+        if (activity == null || currentProjection == null) return;
+        List<Annotation> annotations = activity.getAnnotations();
+        if (annotations == null) return;
+        
+        for (Annotation ann : annotations) {
+            drawSingleAnnotation(ann);
+        }
+    }
+
+    private void drawSingleAnnotation(Annotation ann) {
+        Color color = Color.RED;
+        try {
+            color = Color.web(ann.getColor());
+        } catch (Exception e) {
+            // fallback
+        }
+        double strokeWidth = ann.getStrokeWidth();
+        if (strokeWidth <= 0) strokeWidth = 2.0;
+        
+        List<GeoPoint> geoPoints = ann.getGeoPoints();
+        if (geoPoints == null || geoPoints.isEmpty()) return;
+        
+        switch (ann.getType()) {
+            case POINT: {
+                GeoPoint gp = geoPoints.get(0);
+                javafx.geometry.Point2D p = currentProjection.project(gp);
+                
+                Circle circle = new Circle(p.getX(), p.getY(), 6.0, color);
+                circle.setStroke(Color.WHITE);
+                circle.setStrokeWidth(1.0);
+                
+                mapPane.getChildren().add(circle);
+                
+                addDeleteContextMenu(circle, ann);
+                break;
+            }
+            case TEXT: {
+                GeoPoint gp = geoPoints.get(0);
+                javafx.geometry.Point2D p = currentProjection.project(gp);
+                
+                String text = ann.getText();
+                if (text == null || text.trim().isEmpty()) {
+                    text = "Text";
+                }
+                Text txt = new Text(text);
+                txt.setFill(color);
+                txt.setStyle("-fx-font-weight: bold; -fx-font-size: 12px;");
+                DropShadow ds = new DropShadow();
+                ds.setRadius(3.0);
+                ds.setColor(Color.WHITE);
+                txt.setEffect(ds);
+                
+                txt.setX(p.getX());
+                txt.setY(p.getY());
+                mapPane.getChildren().add(txt);
+                
+                addDeleteContextMenu(txt, ann);
+                break;
+            }
+            case LINE: {
+                if (geoPoints.size() < 2) return;
+                javafx.geometry.Point2D p1 = currentProjection.project(geoPoints.get(0));
+                javafx.geometry.Point2D p2 = currentProjection.project(geoPoints.get(1));
+                
+                Line line = new Line(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+                line.setStroke(color);
+                line.setStrokeWidth(strokeWidth);
+                line.setStrokeLineCap(StrokeLineCap.ROUND);
+                mapPane.getChildren().add(line);
+                
+                addDeleteContextMenu(line, ann);
+                break;
+            }
+            case CIRCLE: {
+                if (geoPoints.size() < 2) return;
+                javafx.geometry.Point2D center = currentProjection.project(geoPoints.get(0));
+                javafx.geometry.Point2D edge = currentProjection.project(geoPoints.get(1));
+                
+                double radius = Math.hypot(edge.getX() - center.getX(), edge.getY() - center.getY());
+                Circle circle = new Circle(center.getX(), center.getY(), radius, Color.TRANSPARENT);
+                circle.setStroke(color);
+                circle.setStrokeWidth(strokeWidth);
+                mapPane.getChildren().add(circle);
+                
+                addDeleteContextMenu(circle, ann);
+                break;
+            }
+        }
+    }
+
+    private void addDeleteContextMenu(Node node, Annotation ann) {
+        node.setOnContextMenuRequested(event -> {
+            if (activeContextMenu != null && activeContextMenu.isShowing()) {
+                activeContextMenu.hide();
+            }
+            ContextMenu contextMenu = new ContextMenu();
+            activeContextMenu = contextMenu;
+            MenuItem deleteItem = new MenuItem("Eliminar anotació");
+            deleteItem.setOnAction(e -> {
+                boolean removed = app.removeAnnotation(ann);
+                if (removed) {
+                    Activity selected = activitiesListView.getSelectionModel().getSelectedItem();
+                    if (selected != null) {
+                        showActivityDetails(selected);
+                    }
+                }
+            });
+            contextMenu.getItems().add(deleteItem);
+            contextMenu.show(node, event.getScreenX(), event.getScreenY());
+            event.consume();
+        });
     }
 }
 
