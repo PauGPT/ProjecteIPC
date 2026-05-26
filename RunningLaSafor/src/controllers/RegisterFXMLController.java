@@ -111,6 +111,9 @@ public class RegisterFXMLController implements Initializable {
             if (userField.getScene() != null) {
                 userField.getScene().getRoot().requestFocus();
             }
+            javafx.stage.Stage stage = (javafx.stage.Stage) userField.getScene().getWindow();
+            stage.setMaximized(true);
+
         });
 
         userField.focusedProperty().addListener((value, oldValue, newValue) -> {

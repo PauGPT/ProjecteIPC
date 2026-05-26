@@ -10,6 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Circle?>
 
 <VBox alignment="CENTER" prefHeight="680.0" prefWidth="600.0" styleClass="main" stylesheets="@../styles/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UpdateUserFXMLController">
@@ -76,7 +77,7 @@
                         </Button> 
                     </children> 
                 </StackPane>
-                 <VBox fx:id="passwordRequirementsBox" managed="false" spacing="8" styleClass="requirements-box" visible="false">
+                <VBox fx:id="passwordRequirementsBox" managed="false" spacing="8" styleClass="requirements-box" visible="false">
                     <Label styleClass="req-title" text="La contrasenya ha d'incloure:" />
                     <Label fx:id="reqLength" styleClass="req-item, req-invalid" text="✘ 8-20 Caràcters" />
                     <Label fx:id="reqUppercase" styleClass="req-item, req-invalid" text="✘ Almenys una majúscula" />
@@ -118,17 +119,24 @@
                         <Insets bottom="-5.0" />
                     </padding>
                 </Label>
-                <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="90.0" prefWidth="90.0">
+                <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="300.0">
                     <children>
-                        <Circle fx:id="avatarCircle" fill="#fff4f4" onMouseClicked="#changeAvatar" radius="45.0" stroke="#cccccc" strokeType="INSIDE" styleClass="avatarCircle" />
-                        <Label fx:id="avatarPlaceholder" mouseTransparent="true" style="-fx-font-size: 26px; -fx-text-fill: #A0AEC0; -fx-font-weight: bold;" text="+" />
-                        <Button fx:id="btnRemoveAvatar" managed="false" mnemonicParsing="false" onAction="#resetAvatar" styleClass="removeAvatarButton" visible="false" StackPane.alignment="TOP_RIGHT">
-                            <graphic>
-                                <StackPane styleClass="removeIcon" />
-                            </graphic>
-                        </Button>
+                        <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="90.0" prefWidth="90.0">
+                            <children>
+                                <Circle fx:id="avatarCircle" fill="#fff4f4" onMouseClicked="#changeAvatar" radius="45.0" stroke="#cccccc" strokeType="INSIDE" styleClass="avatarCircle" />
+                                <Label fx:id="avatarPlaceholder" mouseTransparent="true" style="-fx-font-size: 26px; -fx-text-fill: #A0AEC0; -fx-font-weight: bold;" text="+" />
+                                <Button fx:id="btnRemoveAvatar" managed="false" mnemonicParsing="false" onAction="#resetAvatar" styleClass="removeAvatarButton" visible="false" StackPane.alignment="TOP_RIGHT">
+                                    <graphic>
+                                        <StackPane styleClass="removeIcon" />
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </StackPane>
                     </children>
-                </StackPane>
+                    <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                    </VBox.margin>
+                </HBox>
                 
                 <Label fx:id="errorRegister" managed="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="300.0" styleClass="errorLabel" text="Error al actualitzar. Verifiqui les dades." visible="false" wrapText="true">
                     <graphic>

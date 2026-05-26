@@ -236,3 +236,26 @@
 .main-scroll > .viewport {
     -fx-background-color: transparent;
 }
+
+/* Nuevas propiedades para la vista de Perfil / Solo Lectura */
+
+.read-only-field {
+    -fx-background-color: #f8fafc; /* Fondo ligeramente grisáceo/apagado */
+    -fx-border-color: #e2e8f0;     /* Borde más suave */
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-text-fill: #64748b;        /* Texto en tono secundario (atenuado) */
+    -fx-cursor: default;           /* Cursor normal, no de texto */
+}
+
+.read-only-field:focused {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #cbd5e1;     /* Al ganar foco por código no cambia a verde */
+}
+
+.avatarCircleProfile {
+    -fx-stroke: -border-color;
+    -fx-stroke-width: 2px;
+    -fx-cursor: default;           /* Sin cursor de mano */
+}

@@ -12,6 +12,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.TextFlow?>
 
@@ -148,17 +149,24 @@
                                 <Insets bottom="-5.0" />
                             </padding>
                         </Label>
-                        <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="90.0" prefWidth="90.0">
+                        <HBox alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="300.0">
                             <children>
-                                <Circle fx:id="avatarCircle" fill="#fff4f4" onMouseClicked="#changeAvatar" radius="45.0" stroke="#cccccc" strokeType="INSIDE" styleClass="avatarCircle" />
-                                <Label fx:id="avatarPlaceholder" mouseTransparent="true" style="-fx-font-size: 26px; -fx-text-fill: #A0AEC0; -fx-font-weight: bold;" text="+" />
-                                <Button fx:id="btnRemoveAvatar" managed="false" mnemonicParsing="false" onAction="#resetAvatar" styleClass="removeAvatarButton" visible="false" StackPane.alignment="TOP_RIGHT">
-                                    <graphic>
-                                        <StackPane styleClass="removeIcon" />
-                                    </graphic>
-                                </Button>
+                                <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="90.0" prefWidth="90.0">
+                                    <children>
+                                        <Circle fx:id="avatarCircle" fill="#fff4f4" onMouseClicked="#changeAvatar" radius="45.0" stroke="#cccccc" strokeType="INSIDE" styleClass="avatarCircle" />
+                                        <Label fx:id="avatarPlaceholder" mouseTransparent="true" style="-fx-font-size: 26px; -fx-text-fill: #A0AEC0; -fx-font-weight: bold;" text="+" />
+                                        <Button fx:id="btnRemoveAvatar" managed="false" mnemonicParsing="false" onAction="#resetAvatar" styleClass="removeAvatarButton" visible="false" StackPane.alignment="TOP_RIGHT">
+                                            <graphic>
+                                                <StackPane styleClass="removeIcon" />
+                                            </graphic>
+                                        </Button>
+                                    </children>
+                                </StackPane>
                             </children>
-                        </StackPane>
+                            <VBox.margin>
+                                <Insets bottom="10.0" top="10.0" />
+                            </VBox.margin>
+                        </HBox>
                 
                         <Label fx:id="errorRegister" managed="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="40.0" prefWidth="300.0" styleClass="errorLabel" text="Error en registrar-se. Verifiqui les dades." visible="false" wrapText="true">
                             <graphic>
