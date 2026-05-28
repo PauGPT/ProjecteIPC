@@ -82,6 +82,7 @@
             </Button>
             <MenuButton maxHeight="1.7976931348623157E308" mnemonicParsing="false">
               <items>
+                <MenuItem fx:id="visualitzarPerfilButton" mnemonicParsing="false" onAction="#handleVisualitzarPerfil" text="Visualitzar perfil" />
                 <MenuItem fx:id="modificarPerfilButton" mnemonicParsing="false" onAction="#handleModificarPerfil" text="Modificar perfil" />
                 <MenuItem fx:id="historialButton" mnemonicParsing="false" onAction="#handleHistorial" text="Historial de sessions" />
                   <MenuItem fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="Tancar sessió" />

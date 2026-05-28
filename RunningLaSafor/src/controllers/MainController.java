@@ -54,6 +54,8 @@ public class MainController implements Initializable {
     @FXML
     private ToggleButton mapesButton;
     @FXML
+    private MenuItem visualitzarPerfilButton;
+    @FXML
     private MenuItem modificarPerfilButton;
     @FXML
     private MenuItem historialButton;
@@ -180,6 +182,12 @@ public class MainController implements Initializable {
     @FXML
     private void handleMapes(ActionEvent event) {
         loadView("/views/Mapa.fxml");
+    }
+
+    @FXML
+    private void handleVisualitzarPerfil(ActionEvent event) {
+        deselectMenuButtons();
+        loadView("/views/seeUserFXML.fxml");
     }
 
     @FXML

@@ -84,6 +84,8 @@ public class ActivitatsController implements Initializable {
     @FXML
     private Label lblPace;
     @FXML
+    private Label lblCalories;
+    @FXML
     private Label lblElevationGain;
     @FXML
     private Label lblElevationLoss;
@@ -110,6 +112,8 @@ public class ActivitatsController implements Initializable {
     private Line chartHighlightLine;
     @FXML
     private VBox detailVBox;
+    @FXML
+    private VBox mapContainer;
 
     //Variable auxiliars per a les anotacions
     private boolean waitingForSecondPoint = false;
@@ -117,6 +121,7 @@ public class ActivitatsController implements Initializable {
     private GeoPoint pendingFirstPoint;
     private ContextMenu activeContextMenu;
     private Node previewShape;
+    private boolean ignoreNextRecenter = false;
 
 
 
@@ -142,9 +147,18 @@ public class ActivitatsController implements Initializable {
         activitiesListView.getSelectionModel().selectedItemProperty().addListener((obs, oV, nV) -> {
             if (nV != null) {
                 incrementViewedActivities();
-                showActivityDetails(nV);
+                if (ignoreNextRecenter) {
+                    ignoreNextRecenter = false;
+                    showActivityDetails(nV, false);
+                } else if (oV != null && oV.getId() == nV.getId()) {
+                    showActivityDetails(nV, false);
+                } else {
+                    showActivityDetails(nV, true);
+                }
             } else {
-                clearActivityDetails();
+                if (!ignoreNextRecenter) {
+                    clearActivityDetails();
+                }
             }
         });
 
@@ -166,26 +180,17 @@ public class ActivitatsController implements Initializable {
                 if (event.getDeltaY() < 0) {
                     zoomFactor = 2.0 - zoomFactor;
                 }
-                double newScale = mapScale.getX() * zoomFactor;
-                if (newScale >= 1.0 && newScale <= 5.0) {
-                    mapScale.setX(newScale);
-                    mapScale.setY(newScale);
-                }
+                zoomMap(zoomFactor);
                 event.consume();
             }
         });
         
         mapPane.setOnZoom(event -> {
-            double zoomFactor = event.getZoomFactor();
-            double newScale = mapScale.getX() * zoomFactor;
-            if (newScale >= 1.0 && newScale <= 5.0) {
-                mapScale.setX(newScale);
-                mapScale.setY(newScale);
-            }
+            zoomMap(event.getZoomFactor());
             event.consume();
         });
 
-        // Highlight matching point on map when hovering over elevation chart
+    // Highlight matching point on map when hovering over elevation chart
         elevationChart.setOnMouseMoved(event -> {
             if (currentTrackPoints == null || currentTrackPoints.isEmpty() || currentAccumulatedDistances == null) {
                 return;
@@ -392,6 +397,7 @@ public class ActivitatsController implements Initializable {
         /*lblDistance.setText("0.0 km");
         lblDuration.setText("00:00:00");
         lblPace.setText("0:00 /km");
+        lblCalories.setText("0 kcal");
         lblElevationGain.setText("+0 m");
         lblElevationLoss.setText("-0 m");
         */
@@ -428,16 +434,34 @@ public class ActivitatsController implements Initializable {
             child.setVisible(show);
             child.setManaged(show);
         }
+        if (mapContainer != null) {
+            mapContainer.setVisible(show);
+            mapContainer.setManaged(show);
+        }
+    }
+
+    private double calculateApproximateCalories(Activity activity) {
+        if (activity == null) return 0.0;
+        double distanceKm = activity.getTotalDistance() / 1000.0;
+        double elevationGain = activity.getElevationGain();
+        // Fòrmula d'estimació: 75 kcal per km + 0.15 kcal per cada metre de desnivell positiu acumulat
+        return (distanceKm * 75.0) + (elevationGain * 0.15);
     }
 
     private void showActivityDetails(Activity activity) {
+        showActivityDetails(activity, true);
+    }
+
+    private void showActivityDetails(Activity activity, boolean resetView) {
         if (activeContextMenu != null && activeContextMenu.isShowing()) {
             activeContextMenu.hide();
         }
         btnDeleteActivity.setDisable(false);
         showItems(true);
-        mapScale.setX(1.0);
-        mapScale.setY(1.0);
+        if (resetView) {
+            mapScale.setX(1.0);
+            mapScale.setY(1.0);
+        }
         //Nom de l'activitat
         activityNameLabel.setText(activity.getName());
 
@@ -462,6 +486,10 @@ public class ActivitatsController implements Initializable {
             paceSeconds = 0;
         }
         lblPace.setText(String.format("%d:%02d /km", paceMinutes, paceSeconds));
+        
+        //Imprimir calories
+        double calories = calculateApproximateCalories(activity);
+        lblCalories.setText(String.format(java.util.Locale.getDefault(), "%.0f kcal", calories));
 
         //Imprimir desnivell
         lblElevationGain.setText(String.format(java.util.Locale.getDefault(), "+%.0f m", activity.getElevationGain()));
@@ -483,7 +511,7 @@ public class ActivitatsController implements Initializable {
                 mapImageView.setImage(mapImg);
                 mapPane.setPrefSize(mapImg.getWidth(), mapImg.getHeight());
                 
-                drawRouteOnMap(activity, region, mapImg.getWidth(), mapImg.getHeight());
+                drawRouteOnMap(activity, region, mapImg.getWidth(), mapImg.getHeight(), resetView);
             } else {
                 mapImageView.setImage(null);
                 mapPane.getChildren().removeIf(node -> node != mapImageView);
@@ -497,7 +525,10 @@ public class ActivitatsController implements Initializable {
         drawElevationChart(activity);
     }
 
-    private void drawRouteOnMap(Activity activity, MapRegion region, double width, double height) {
+    private void drawRouteOnMap(Activity activity, MapRegion region, double width, double height, boolean resetView) {
+        double savedHvalue = mapScrollPane != null ? mapScrollPane.getHvalue() : 0.5;
+        double savedVvalue = mapScrollPane != null ? mapScrollPane.getVvalue() : 0.5;
+
         //Borrar tots els punts excepte el imageview
         mapPane.getChildren().removeIf(node -> node != mapImageView);
         
@@ -621,31 +652,57 @@ public class ActivitatsController implements Initializable {
         
         drawAnnotations(activity);
 
-        // Enfocar el mapa al punt d'inici de la ruta
-        javafx.application.Platform.runLater(() -> {
-            double viewportWidth = mapScrollPane.getViewportBounds().getWidth();
-            double viewportHeight = mapScrollPane.getViewportBounds().getHeight();
-            
-            if (viewportWidth <= 0) viewportWidth = mapScrollPane.getWidth();
-            if (viewportHeight <= 0) viewportHeight = mapScrollPane.getHeight();
-            if (viewportWidth <= 0) viewportWidth = 500;
-            if (viewportHeight <= 0) viewportHeight = 350;
-            
-            double hMax = width - viewportWidth;
-            double vMax = height - viewportHeight;
-            
-            if (hMax > 0) {
-                double hVal = (startProj.getX() - (viewportWidth / 2.0)) / hMax;
-                mapScrollPane.setHvalue(Math.max(0.0, Math.min(1.0, hVal)));
-            } else {
-                mapScrollPane.setHvalue(0.5);
+        // Calcular el centre de la ruta a partir de tots els seus punts projectats
+        double tempMinX = Double.MAX_VALUE;
+        double tempMaxX = -Double.MAX_VALUE;
+        double tempMinY = Double.MAX_VALUE;
+        double tempMaxY = -Double.MAX_VALUE;
+
+        for (TrackPoint tp : points) {
+            javafx.geometry.Point2D proj = currentProjection.project(tp);
+            if (proj != null) {
+                double x = proj.getX();
+                double y = proj.getY();
+                if (x < tempMinX) tempMinX = x;
+                if (x > tempMaxX) tempMaxX = x;
+                if (y < tempMinY) tempMinY = y;
+                if (y > tempMaxY) tempMaxY = y;
             }
-            
-            if (vMax > 0) {
-                double vVal = (startProj.getY() - (viewportHeight / 2.0)) / vMax;
-                mapScrollPane.setVvalue(Math.max(0.0, Math.min(1.0, vVal)));
+        }
+        
+        final double routeCenterX = (tempMinX + tempMaxX) / 2.0;
+        final double routeCenterY = (tempMinY + tempMaxY) / 2.0;
+
+        // Enfocar el mapa al punt mitjà de la ruta o restaurar posició prèvia
+        javafx.application.Platform.runLater(() -> {
+            if (resetView) {
+                double viewportWidth = mapScrollPane.getViewportBounds().getWidth();
+                double viewportHeight = mapScrollPane.getViewportBounds().getHeight();
+                
+                if (viewportWidth <= 0) viewportWidth = mapScrollPane.getWidth();
+                if (viewportHeight <= 0) viewportHeight = mapScrollPane.getHeight();
+                if (viewportWidth <= 0) viewportWidth = 500;
+                if (viewportHeight <= 0) viewportHeight = 350;
+                
+                double hMax = width - viewportWidth;
+                double vMax = height - viewportHeight;
+                
+                if (hMax > 0) {
+                    double hVal = (routeCenterX - (viewportWidth / 2.0)) / hMax;
+                    mapScrollPane.setHvalue(Math.max(0.0, Math.min(1.0, hVal)));
+                } else {
+                    mapScrollPane.setHvalue(0.5);
+                }
+                
+                if (vMax > 0) {
+                    double vVal = (routeCenterY - (viewportHeight / 2.0)) / vMax;
+                    mapScrollPane.setVvalue(Math.max(0.0, Math.min(1.0, vVal)));
+                } else {
+                    mapScrollPane.setVvalue(0.5);
+                }
             } else {
-                mapScrollPane.setVvalue(0.5);
+                mapScrollPane.setHvalue(savedHvalue);
+                mapScrollPane.setVvalue(savedVvalue);
             }
         });
     }
@@ -1049,7 +1106,7 @@ public class ActivitatsController implements Initializable {
         result.ifPresent(ann -> {
             Annotation saved = app.addAnnotation(selected, ann);
             if (saved != null) {
-                showActivityDetails(selected);
+                showActivityDetails(selected, false);
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -1164,7 +1221,31 @@ public class ActivitatsController implements Initializable {
                 if (removed) {
                     Activity selected = activitiesListView.getSelectionModel().getSelectedItem();
                     if (selected != null) {
-                        showActivityDetails(selected);
+                        boolean memoryRemoved = false;
+                        try {
+                            memoryRemoved = selected.getAnnotations().removeIf(a -> a.getId() == ann.getId());
+                        } catch (Exception ex) {
+                            // El llistat pot ser no modificable
+                        }
+                        
+                        if (memoryRemoved) {
+                            showActivityDetails(selected, false);
+                        } else {
+                            try {
+                                Activity updated = app.getActivityById(selected.getId());
+                                if (updated != null) {
+                                    int index = activitiesListView.getItems().indexOf(selected);
+                                    if (index >= 0) {
+                                        ignoreNextRecenter = true;
+                                        activitiesListView.getItems().set(index, updated);
+                                        activitiesListView.getSelectionModel().select(updated);
+                                    }
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                showActivityDetails(selected, false);
+                            }
+                        }
                     }
                 }
             });
@@ -1172,6 +1253,54 @@ public class ActivitatsController implements Initializable {
             contextMenu.show(node, event.getScreenX(), event.getScreenY());
             event.consume();
         });
+    }
+
+    private void zoomMap(double zoomFactor) {
+        double oldScale = mapScale.getX();
+        double newScale = oldScale * zoomFactor;
+        
+        if (newScale >= 0.2 && newScale <= 5.0) {
+            double viewportWidth = mapScrollPane.getViewportBounds().getWidth();
+            double viewportHeight = mapScrollPane.getViewportBounds().getHeight();
+            
+            if (viewportWidth <= 0) viewportWidth = mapScrollPane.getWidth();
+            if (viewportHeight <= 0) viewportHeight = mapScrollPane.getHeight();
+            if (viewportWidth <= 0) viewportWidth = 500;
+            if (viewportHeight <= 0) viewportHeight = 350;
+            
+            double hVal = mapScrollPane.getHvalue();
+            double vVal = mapScrollPane.getVvalue();
+            
+            double contentWidth = mapImageView.getImage() != null ? mapImageView.getImage().getWidth() : mapPane.getWidth();
+            double contentHeight = mapImageView.getImage() != null ? mapImageView.getImage().getHeight() : mapPane.getHeight();
+            if (contentWidth <= 0) contentWidth = 1000.0;
+            if (contentHeight <= 0) contentHeight = 1000.0;
+            
+            double oldContentCenterX = (hVal * (contentWidth * oldScale - viewportWidth) + viewportWidth / 2.0) / oldScale;
+            double oldContentCenterY = (vVal * (contentHeight * oldScale - viewportHeight) + viewportHeight / 2.0) / oldScale;
+            
+            mapScale.setX(newScale);
+            mapScale.setY(newScale);
+            
+            double denomH = contentWidth * newScale - viewportWidth;
+            double newH = denomH > 0.0 ? (oldContentCenterX * newScale - viewportWidth / 2.0) / denomH : 0.5;
+            
+            double denomV = contentHeight * newScale - viewportHeight;
+            double newV = denomV > 0.0 ? (oldContentCenterY * newScale - viewportHeight / 2.0) / denomV : 0.5;
+            
+            mapScrollPane.setHvalue(Math.max(0.0, Math.min(1.0, newH)));
+            mapScrollPane.setVvalue(Math.max(0.0, Math.min(1.0, newV)));
+        }
+    }
+
+    @FXML
+    private void handleZoomIn(ActionEvent event) {
+        zoomMap(1.15);
+    }
+
+    @FXML
+    private void handleZoomOut(ActionEvent event) {
+        zoomMap(1.0 / 1.15);
     }
 }
 

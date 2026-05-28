@@ -4,6 +4,7 @@
  */
 package controllers;
 
+import application.App;
 import java.io.File;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -64,29 +65,28 @@ public class SeeUserFXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        app.login("juan_23", "juan_23!");
         user = app.getCurrentUser();
 
-        if (user.getAvatarPath() != null) {
-            selectedAvatarFile = new File(user.getAvatarPath());
-            Image image = new Image(selectedAvatarFile.toURI().toString());
-            avatarCircle.setFill(new ImagePattern(image));
-        } else {
-            Image image = new Image(getClass().getResourceAsStream("/resources/main/default_avatar.png"));
-            avatarCircle.setFill(new ImagePattern(image));
+        if (user != null) {
+            if (user.getAvatarPath() != null) {
+                selectedAvatarFile = new File(user.getAvatarPath());
+                Image image = new Image(selectedAvatarFile.toURI().toString());
+                avatarCircle.setFill(new ImagePattern(image));
+            } else {
+                Image image = new Image(getClass().getResourceAsStream("/resources/main/default_avatar.png"));
+                avatarCircle.setFill(new ImagePattern(image));
+            }
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String fechaFormateada = user.getBirthDate().format(formatter);
+            birthField.setText(fechaFormateada);
+
+            emailField.setText(user.getEmail());
+            userField.setText(user.getNickName());
+
+            passField.setText(user.getPassword());
+            passTextField.setText(user.getPassword());
         }
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        String fechaFormateada = user.getBirthDate().format(formatter);
-        birthField.setText(fechaFormateada);
-
-        birthField.setText(fechaFormateada);
-        emailField.setText(user.getEmail());
-        userField.setText(user.getNickName());
-
-        passField.setText(user.getPassword());
-        passTextField.setText(user.getPassword());
-
     }
 
     @FXML
@@ -116,5 +116,10 @@ public class SeeUserFXMLController implements Initializable {
         }
 
         passVisible = !passVisible;
+    }
+
+    @FXML
+    private void handleModificarPerfil(ActionEvent event) {
+        App.getMainController().loadView("/views/updateUserFXML.fxml");
     }
 }

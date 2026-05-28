@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="900.0" spacing="15.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ActivitatsController">
@@ -29,95 +30,132 @@
             <Button fx:id="btnDeleteActivity" disable="true" mnemonicParsing="false" onAction="#handleDeleteActivity" styleClass="destructive-button" text="Suprimir Activitat" />
          </children>
       </HBox>
-      <SplitPane fx:id="splitPane" dividerPositions="0.25" VBox.vgrow="ALWAYS">
+      <SplitPane fx:id="splitPane" dividerPositions="0.2" VBox.vgrow="ALWAYS">
         <items>
           <ListView fx:id="activitiesListView" />
-          <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
-             <content>
-                <VBox fx:id="detailVBox" spacing="20.0" style="-fx-padding: 15;">
-                   <children>
-                      <!-- Nom de l'activitat -->
-                      <Label fx:id="activityNameLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Selecciona una activitat" />
-                      
-                      <!-- Estadístiques de l'activitat -->
-                      <HBox alignment="CENTER" spacing="20.0">
+          <SplitPane dividerPositions="0.3125" VBox.vgrow="ALWAYS">
+             <items>
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+                   <content>
+                      <VBox fx:id="detailVBox" spacing="20.0" style="-fx-padding: 15;">
                          <children>
-                            <!-- Distància -->
-                            <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
+                            <!-- Nom de l'activitat -->
+                            <Label fx:id="activityNameLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="Selecciona una activitat" />
+                            
+                            <!-- Estadístiques de l'activitat -->
+                            <VBox spacing="10.0">
                                <children>
-                                  <Label fx:id="lblDistance" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #27ae60;" text="0.0 km" />
-                                  <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Distància" />
-                               </children>
-                            </VBox>
-                            <!-- Temps -->
-                            <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
-                               <children>
-                                  <Label fx:id="lblDuration" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2980b9;" text="00:00:00" />
-                                  <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Durada" />
-                               </children>
-                            </VBox>
-                            <!-- Ritme Mitjà -->
-                            <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
-                               <children>
-                                  <Label fx:id="lblPace" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #e67e22;" text="0:00 /km" />
-                                  <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Ritme Mitjà" />
-                               </children>
-                            </VBox>
-                            <!-- Desnivell Positiu -->
-                            <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
-                               <children>
-                                  <Label fx:id="lblElevationGain" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2ecc71;" text="+0 m" />
-                                  <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Desnivell +" />
-                               </children>
-                            </VBox>
-                            <!-- Desnivell Negatiu -->
-                            <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
-                               <children>
-                                  <Label fx:id="lblElevationLoss" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;" text="-0 m" />
-                                  <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Desnivell -" />
-                               </children>
-                            </VBox>
-                         </children>
-                      </HBox>
-
-                      <!-- Mapa de la ruta -->
-                      <VBox spacing="5.0">
-                         <children>
-                            <Label style="-fx-font-weight: bold; -fx-text-fill: #34495e;" text="Mapa i Traçat de la Ruta" />
-                            <ScrollPane fx:id="mapScrollPane" pannable="true" prefHeight="350.0" style="-fx-border-color: #e0e0e0; -fx-border-radius: 4; -fx-background-radius: 4;">
-                               <content>
-                                  <Group>
+                                  <!-- Fila 1: Distància i Durada -->
+                                  <HBox spacing="10.0">
                                      <children>
-                                        <Pane fx:id="mapPane">
+                                        <!-- Distància -->
+                                        <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
                                            <children>
-                                              <ImageView fx:id="mapImageView" pickOnBounds="true" />
+                                              <Label fx:id="lblDistance" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="0.0 km" />
+                                              <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Distància" />
                                            </children>
-                                        </Pane>
+                                        </VBox>
+                                        <!-- Temps / Durada -->
+                                        <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
+                                           <children>
+                                              <Label fx:id="lblDuration" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="00:00:00" />
+                                              <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Durada" />
+                                           </children>
+                                        </VBox>
                                      </children>
-                                  </Group>
-                               </content>
-                            </ScrollPane>
-                         </children>
-                      </VBox>
+                                  </HBox>
+                                  <!-- Fila 2: Ritme Mitjà i Calories -->
+                                  <HBox spacing="10.0">
+                                     <children>
+                                        <!-- Ritme Mitjà -->
+                                        <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
+                                           <children>
+                                              <Label fx:id="lblPace" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="0:00 /km" />
+                                              <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Ritme Mitjà" />
+                                           </children>
+                                        </VBox>
+                                        <!-- Calories -->
+                                        <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
+                                           <children>
+                                              <Label fx:id="lblCalories" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="0 kcal" />
+                                              <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Calories" />
+                                           </children>
+                                        </VBox>
+                                     </children>
+                                  </HBox>
+                                  <!-- Fila 3: Desnivell Positiu i Negatiu -->
+                                  <HBox spacing="10.0">
+                                     <children>
+                                        <!-- Desnivell Positiu -->
+                                        <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
+                                           <children>
+                                              <Label fx:id="lblElevationGain" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="+0 m" />
+                                              <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Desnivell +" />
+                                           </children>
+                                        </VBox>
+                                        <!-- Desnivell Negatiu -->
+                                        <VBox alignment="CENTER" style="-fx-background-color: #ffffff; -fx-background-radius: 8; -fx-border-color: #e0e0e0; -fx-border-radius: 8; -fx-padding: 10;" HBox.hgrow="ALWAYS">
+                                           <children>
+                                              <Label fx:id="lblElevationLoss" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="-0 m" />
+                                              <Label style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;" text="Desnivell -" />
+                                           </children>
+                                        </VBox>
+                                     </children>
+                                  </HBox>
+                               </children>
+                            </VBox>
 
-                      <!-- Gràfic de perfil de la ruta -->
-                      <VBox spacing="5.0">
-                         <children>
-                            <Label style="-fx-font-weight: bold; -fx-text-fill: #34495e;" text="Perfil d'Altitud (Desnivell)" />
-                            <AreaChart fx:id="elevationChart" legendVisible="false" prefHeight="200.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 4;">
-                              <xAxis>
-                                <NumberAxis label="Distància (km)" fx:id="xAxisChart" />
-                              </xAxis>
-                              <yAxis>
-                                <NumberAxis fx:id="yAxisChart" forceZeroInRange="false" label="Altitud (m)" />
-                              </yAxis>
-                            </AreaChart>
+                            <!-- Gràfic de perfil de la ruta -->
+                            <VBox spacing="5.0">
+                               <children>
+                                  <Label style="-fx-font-weight: bold; -fx-text-fill: #34495e;" text="Perfil d'Altitud (Desnivell)" />
+                                  <AreaChart fx:id="elevationChart" legendVisible="false" prefHeight="200.0" style="-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 4;">
+                                    <xAxis>
+                                      <NumberAxis label="Distància (km)" fx:id="xAxisChart" />
+                                    </xAxis>
+                                    <yAxis>
+                                      <NumberAxis fx:id="yAxisChart" forceZeroInRange="false" label="Altitud (m)" />
+                                    </yAxis>
+                                  </AreaChart>
+                               </children>
+                            </VBox>
                          </children>
                       </VBox>
+                   </content>
+                </ScrollPane>
+                <VBox fx:id="mapContainer" spacing="5.0" style="-fx-padding: 15;">
+                   <children>
+                      <Label style="-fx-font-weight: bold; -fx-text-fill: #34495e;" text="Mapa i Traçat de la Ruta" />
+                       <StackPane VBox.vgrow="ALWAYS">
+                          <children>
+                             <ScrollPane fx:id="mapScrollPane" pannable="true" style="-fx-border-color: #e0e0e0; -fx-border-radius: 4; -fx-background-radius: 4;">
+                                <content>
+                                   <Group>
+                                      <children>
+                                         <Pane fx:id="mapPane">
+                                            <children>
+                                               <ImageView fx:id="mapImageView" pickOnBounds="true" />
+                                            </children>
+                                         </Pane>
+                                      </children>
+                                   </Group>
+                                </content>
+                             </ScrollPane>
+                             <VBox spacing="5.0" StackPane.alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity">
+                                <StackPane.margin>
+                                   <Insets top="10.0" right="25.0" />
+                                </StackPane.margin>
+                                <children>
+                                   <Button onAction="#handleZoomIn" prefHeight="35.0" prefWidth="35.0" styleClass="zoom-button" text="+" />
+                                   <Button onAction="#handleZoomOut" prefHeight="35.0" prefWidth="35.0" styleClass="zoom-button" text="-" />
+                                </children>
+                             </VBox>
+                          </children>
+                       </StackPane>
                    </children>
                 </VBox>
-             </content>
-          </ScrollPane>
+             </items>
+          </SplitPane>
         </items>
       </SplitPane>
    </children>
